@@ -17,3 +17,4 @@ class TriageResponse(BaseModel):
     urgency: Optional[Literal["home_care", "visit_phc", "critical", "unclear"]] = None
     is_final: bool = False
     source: Optional[str] = None
+    sources: Optional[List[str]] = None

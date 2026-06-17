@@ -10,3 +10,7 @@ chromadb
 groq
 httpx
 pydantic
+sentence-transformers
+faiss-cpu
+rank_bm25
+numpy

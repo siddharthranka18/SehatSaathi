@@ -1,0 +1,11 @@
+AYUSH-Style Home Care Guidance (Illustrative Sample Only)
+This is a simplified illustrative reference for demo purposes. Replace with vetted Ministry of AYUSH or ICMR-approved content before any real deployment.
+
+## Common Cold and Mild Cough
+Mild cold symptoms such as runny nose, mild sore throat, and occasional cough lasting under 5 days can usually be managed at home: warm salt-water gargling, steam inhalation, turmeric milk, ginger-tulsi tea, and rest. Seek medical attention if symptoms worsen after 5 days or fever develops above 101°F.
+
+## Mild Digestive Upset
+Mild indigestion, bloating, or occasional loose motion without blood or high fever can often be managed at home: cumin water, light khichdi diet, avoiding oily/spicy food, and ORS if there's fluid loss. Seek medical attention if there's blood in stool, high fever, or symptoms lasting more than 2 days.
+
+## General Fatigue and Mild Body Ache
+Mild fatigue or body ache without fever, after a normal day's activity, can usually be managed with rest, hydration, and light stretching — this is home-care only when there's no fever, no localized swelling, and no injury involved.

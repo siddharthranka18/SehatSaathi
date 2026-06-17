@@ -1,0 +1,11 @@
+WHO-Style Symptom Triage Guidance (Illustrative Sample Only)
+This is a simplified illustrative reference for demo purposes. Replace with the actual WHO IMCI guideline document before any real deployment.
+
+## Fever Severity Grading
+Mild fever (under 101°F, less than 2 days, patient alert and eating normally): home care appropriate. Moderate fever (101-104°F, more than 2 days, mild associated symptoms, no breathing difficulty): visit a PHC within 24-48 hours. Severe fever (above 104°F, or fever with stiff neck, severe headache, confusion, persistent vomiting, or difficulty breathing, or fever in an infant under 3 months): critical, seek immediate care.
+
+## Respiratory Symptom Severity
+Mild cough or congestion without breathing difficulty: home care appropriate. Persistent cough lasting more than a week, or cough with mild breathlessness on exertion: visit a PHC within 24-48 hours. Breathing difficulty at rest, blue lips, or chest indrawing: critical, seek immediate care.
+
+## Diarrhea and Dehydration Severity
+Mild diarrhea, normal urination, alert patient: home care with oral rehydration appropriate. Diarrhea with reduced urination, mild lethargy: visit a PHC within 24-48 hours. Diarrhea with no urination for 6+ hours, sunken eyes, extreme lethargy, or blood in stool: critical, seek immediate care.

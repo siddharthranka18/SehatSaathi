@@ -1,0 +1,11 @@
+First Aid Guidance (Illustrative Sample Only)
+This is a simplified illustrative reference for demo purposes. Replace with vetted Indian Red Cross or St John Ambulance protocols before any real deployment.
+
+## Minor Cuts and Burns
+For minor cuts: clean with running water, apply antiseptic, cover with a clean bandage. For minor burns (small, no blistering): cool under running water for 10 minutes, do not apply ice directly, cover loosely. Seek medical attention if the wound is deep, won't stop bleeding, or the burn covers a large area or blisters significantly.
+
+## Fainting
+If someone faints briefly and regains consciousness quickly: lay them flat, elevate legs slightly, ensure fresh air, loosen tight clothing. If they do not regain consciousness within a minute, or fainting repeats, this is critical and needs urgent medical attention.
+
+## Choking
+If a person is choking but can still cough or speak: encourage continued coughing. If they cannot speak, cough, or breathe, this is a critical emergency requiring immediate first aid and urgent medical help.
