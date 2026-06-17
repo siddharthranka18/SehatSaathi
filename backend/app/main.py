@@ -15,6 +15,7 @@ app.include_router(
 
 @app.get("/")
 def root():
+
     return {
-        "message": "API running"
+        "message": "SehatSaathi API running"
     }

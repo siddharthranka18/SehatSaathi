@@ -6,30 +6,29 @@ from dotenv import load_dotenv
 
 from groq import Groq
 
-
-from app.models.schemas import (
+from ..models.schemas import (
     TriageRequest,
     TriageResponse
 )
 
 
-from app.services.rag_service import (
+from .rag_service import (
     retrieve_context
 )
 
 
-from app.services.query_service import (
+from .query_service import (
     rewrite_query
 )
 
 
-from app.services.safety_service import (
+from .safety_service import (
     check_red_flags,
     validate_ai_response
 )
 
 
-from app.services.web_search_service import (
+from .web_search_service import (
     web_search_fallback
 )
 

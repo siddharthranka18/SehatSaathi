@@ -1,64 +1,59 @@
 """
-Query transformation service
+Query rewriting service
 
-Responsible for:
-- conversational query rewriting
-- voice/noisy input normalization
-- better retrieval queries
+Converts user conversation into a better
+medical retrieval query.
 
-Runs BEFORE RAG retrieval
+Example:
+"My head hurts since yesterday"
+
+↓
+
+"Patient reports headache duration one day symptoms"
 """
-
-
-from langchain_core.prompts import ChatPromptTemplate
 
 
 def rewrite_query(
-        llm,
-        user_query:str,
-        chat_history:str=""
+        llm_call,
+        query:str
 ):
 
-    prompt = ChatPromptTemplate.from_template(
-        """
-You are a medical search query optimizer.
 
-Your job:
-Rewrite the patient's message into a clear
-medical retrieval query.
+    messages=[
+
+        {
+            "role":"system",
+
+            "content":
+            """
+You rewrite user health queries for medical document retrieval.
 
 Rules:
+- Keep symptoms
+- Keep duration
+- Keep severity
+- Remove unnecessary conversation words
 - Do NOT diagnose
-- Do NOT add symptoms
-- Keep all symptoms mentioned
-- Expand unclear words
-- Preserve urgency indicators
-- Include time duration if mentioned
 
-
-Conversation history:
-{history}
-
-
-Patient message:
-{query}
-
-
-Optimized search query:
+Return only rewritten query text.
 """
+        },
+
+
+        {
+            "role":"user",
+
+            "content":query
+        }
+
+    ]
+
+
+
+    response = llm_call(
+        messages
     )
 
 
-    chain = prompt | llm
 
-
-    response = chain.invoke({
-
-        "query":user_query,
-
-        "history":chat_history
-
-    })
-
-
-    return response.content
+    return response.strip()
