@@ -7,10 +7,7 @@ app = FastAPI(
     title="SehatSaathi API"
 )
 
-
-app.include_router(
-    triage.router
-)
+app.include_router(triage.router, prefix="/api")
 
 
 @app.get("/")

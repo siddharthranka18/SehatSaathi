@@ -1,5 +1,6 @@
 import os
 import json
+import re
 
 from pathlib import Path
 from dotenv import load_dotenv
@@ -11,33 +12,18 @@ from ..models.schemas import (
     TriageResponse
 )
 
-
-from .rag_service import (
-    retrieve_context
-)
-
-
-from .query_service import (
-    rewrite_query
-)
-
-
+from .rag_service import retrieve_context
+from .query_service import rewrite_query
 from .safety_service import (
     check_red_flags,
     validate_ai_response
 )
-
-
-from .web_search_service import (
-    web_search_fallback
-)
-
+from .web_search_service import web_search_fallback
 
 
 # ==========================
 # ENV + GROQ
 # ==========================
-
 
 BASE_DIR = Path(__file__).resolve().parents[3]
 
@@ -58,22 +44,18 @@ GROQ_MODEL = os.getenv(
 )
 
 
-_client=None
-
+_client = None
 
 
 def get_client():
 
     global _client
 
-
     if _client is None:
 
-
-        _client=Groq(
+        _client = Groq(
             api_key=GROQ_API_KEY
         )
-
 
     return _client
 
@@ -84,15 +66,12 @@ def get_client():
 # ==========================
 
 
-def chat_completion(
-        messages:list[dict]
-):
+def chat_completion(messages:list[dict]):
+
+    client = get_client()
 
 
-    client=get_client()
-
-
-    response=client.chat.completions.create(
+    response = client.chat.completions.create(
 
         model=GROQ_MODEL,
 
@@ -108,7 +87,6 @@ def chat_completion(
 
 
 
-
 # ==========================
 # SYSTEM PROMPT
 # ==========================
@@ -117,66 +95,42 @@ def chat_completion(
 SYSTEM_PROMPT = """
 
 You are SehatSaathi,
-a careful health triage assistant for India.
-
-
-IMPORTANT:
+a safe medical triage assistant.
 
 You are NOT a doctor.
 
-Never diagnose diseases.
+Never diagnose disease names.
 
-Your job is only:
+Your tasks:
 
-- understand symptoms
-- ask needed follow-up questions
-- provide urgency guidance
+1. Understand symptoms.
+2. Ask only necessary follow-up questions.
+3. Classify urgency.
 
-
-Possible urgency:
-
+Categories:
 
 home_care:
-Mild symptoms
-
+Mild symptoms.
 
 visit_phc:
-Should visit healthcare worker
-within 24-48 hours
-
+Needs healthcare visit within 24-48 hours.
 
 critical:
-Needs urgent medical attention
+Needs urgent medical attention.
 
 
 Rules:
 
-1.
-Use the provided medical context.
-
-2.
-Do not invent medical facts.
-
-3.
-If uncertain choose visit_phc.
-
-4.
-Ask maximum 3-4 follow-up questions.
-
-5.
-If enough information exists,
-give final answer.
-
-6.
-Speak in user's language.
-
-7.
-Always mention:
+- Use provided medical context.
+- Never invent medical facts.
+- If uncertain choose visit_phc.
+- Maximum 3-4 follow-up questions.
+- Reply in user's language.
+- Mention:
 "This is guidance, not diagnosis."
 
 
 Return ONLY JSON:
-
 
 {
 "reply":"message",
@@ -190,9 +144,49 @@ Return ONLY JSON:
 
 
 # ==========================
-# MAIN TRIAGE PIPELINE
+# SAFE JSON PARSER
 # ==========================
 
+
+def parse_llm_json(raw):
+
+
+    raw = raw.strip()
+
+
+    raw = raw.replace(
+        "```json",
+        ""
+    )
+
+
+    raw = raw.replace(
+        "```",
+        ""
+    )
+
+
+    match = re.search(
+        r"\{.*\}",
+        raw,
+        re.DOTALL
+    )
+
+
+    if match:
+
+        raw = match.group()
+
+
+    return json.loads(raw)
+
+
+
+
+
+# ==========================
+# MAIN TRIAGE PIPELINE
+# ==========================
 
 
 def run_triage(
@@ -203,13 +197,14 @@ def run_triage(
 
     # combine conversation
 
-
-    full_text=" ".join(
+    full_text = " ".join(
 
         [
+
             m.content
 
             for m in request.conversation
+
         ]
 
     )
@@ -217,11 +212,11 @@ def run_triage(
 
 
     # ======================
-    # 1. HARD SAFETY CHECK
+    # 1. SAFETY CHECK
     # ======================
 
 
-    safety=check_red_flags(
+    safety = check_red_flags(
         full_text
     )
 
@@ -249,7 +244,6 @@ def run_triage(
     # ======================
 
 
-
     rewritten_query = rewrite_query(
 
         chat_completion,
@@ -260,20 +254,24 @@ def run_triage(
 
 
 
+    print(
+        "REWRITTEN QUERY:",
+        rewritten_query
+    )
+
+
 
 
     # ======================
-    # 3. ADVANCED RAG
+    # 3. RAG RETRIEVAL
     # ======================
 
 
-
-    rag_result=retrieve_context(
+    rag_result = retrieve_context(
 
         rewritten_query
 
     )
-
 
 
 
@@ -283,63 +281,49 @@ def run_triage(
     # ======================
 
 
-
     if rag_result["confident"]:
 
 
-        context="\n\n".join(
+        context = "\n\n".join(
 
             rag_result["chunks"]
 
         )
 
 
-        source="medical_guideline_rag"
+        source = "medical_guideline_rag"
 
 
 
     else:
 
 
-        web_result=web_search_fallback(
+        web_result = web_search_fallback(
 
             rewritten_query
 
         )
 
 
-        context=web_result["answer"]
+        context = web_result["answer"]
 
 
-        source="web_fallback"
+        source = "web_fallback"
 
 
 
 
 
     # ======================
-    # 5. FOLLOW-UP LIMIT
+    # 5. BUILD LLM MESSAGE
     # ======================
 
 
 
-    assistant_turns=sum(
-
-        1
-
-        for m in request.conversation
-
-        if m.role=="assistant"
-
-    )
-
-
-
-
-    messages=[
-
+    messages = [
 
         {
+
             "role":"system",
 
             "content":
@@ -350,10 +334,7 @@ def run_triage(
 
             f"""
 
-
-
 Verified Medical Context:
-
 
 {context}
 
@@ -362,8 +343,6 @@ Verified Medical Context:
         }
 
     ]
-
-
 
 
 
@@ -382,41 +361,12 @@ Verified Medical Context:
 
 
 
-    if assistant_turns>=4:
-
-
-
-        messages.append({
-
-
-            "role":"system",
-
-
-            "content":
-
-            """
-
-You have enough information.
-
-Do not ask more questions.
-
-Return final urgency classification.
-
-"""
-
-        })
-
-
-
-
-
     # ======================
-    # 6. GENERATE ANSWER
+    # 6. LLM GENERATION
     # ======================
 
 
-
-    raw=chat_completion(
+    raw = chat_completion(
 
         messages
 
@@ -424,39 +374,46 @@ Return final urgency classification.
 
 
 
+    print(
+        "RAW LLM:",
+        raw
+    )
+
+
+
 
     # ======================
-    # 7. PARSE JSON
+    # 7. JSON PARSE
     # ======================
-
 
 
     try:
 
 
-        parsed=json.loads(
+        parsed = parse_llm_json(
+
             raw
+
         )
 
 
 
-    except json.JSONDecodeError:
+    except Exception as e:
 
+
+        print(
+            "JSON ERROR:",
+            e
+        )
 
 
         return TriageResponse(
 
-
-            reply=
-
-            "Could you describe your symptoms again?",
-
+            reply="I could not understand properly. Please explain again.",
 
             urgency="unclear",
 
-
             is_final=False,
-
 
             source="json_parse_error"
 
@@ -465,18 +422,19 @@ Return final urgency classification.
 
 
 
-
     # ======================
-    # 8. OUTPUT SAFETY CHECK
+    # 8. OUTPUT SAFETY
     # ======================
 
 
-
-    safe=validate_ai_response(
+    safe = validate_ai_response(
 
         parsed.get(
+
             "reply",
+
             ""
+
         )
 
     )
@@ -488,16 +446,11 @@ Return final urgency classification.
 
         return TriageResponse(
 
-            reply=
-
-            "Please consult a healthcare professional for proper guidance.",
-
+            reply="Please consult a healthcare professional for proper guidance.",
 
             urgency="visit_phc",
 
-
             is_final=True,
-
 
             source="output_guardrail"
 
@@ -517,8 +470,11 @@ Return final urgency classification.
 
 
         reply=parsed.get(
+
             "reply",
+
             ""
+
         ),
 
 
