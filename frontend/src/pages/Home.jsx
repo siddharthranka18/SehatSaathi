@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import ChatBubble from '../components/ChatBubble.jsx'
 import TriageCard from '../components/TriageCard.jsx'
 
-export default function Home() {
+export default function Home({onBack}) {
   const [messages, setMessages] = useState([
     { role: 'assistant', content: 'Hi, I am SehatSaathi. Please tell me what symptom you are experiencing.', source: null, urgency: null, is_final: false },
   ])
@@ -36,12 +36,21 @@ export default function Home() {
 return (
   <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', background: '#FDF6EC' }}>
     
-    {/* Header - full width */}
-    <div style={{ background: '#0D7377', padding: '14px 24px', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-      <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#F4A261', flexShrink: 0 }} />
-      <span style={{ fontFamily: 'Nunito, sans-serif', color: '#ffffff', fontSize: 18, fontWeight: 700 }}>SehatSaathi</span>
-      <span style={{ fontFamily: 'Nunito, sans-serif', color: '#a8d8d9', fontSize: 13, marginLeft: 'auto' }}>AI Health Triage</span>
-    </div>
+ {/* replace your existing header div with this */}
+<div style={{ background: '#1B3A4B', padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+  <button
+    onClick={onBack}
+    style={{ background: 'transparent', border: 'none', color: 'rgba(245,244,240,0.6)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontFamily: 'DM Sans, sans-serif', padding: 0 }}
+    aria-label="Back to home"
+  >
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
+    </svg>
+    Back
+  </button>
+  <span style={{ fontFamily: 'DM Serif Display, serif', color: '#F5F4F0', fontSize: 18, fontWeight: 400 }}>SehatSaathi</span>
+  <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#7A9BB0', fontSize: 12, marginLeft: 'auto', letterSpacing: '0.05em' }}>AI Health Triage</span>
+</div>
 
     {/* Chat area - centred column, full height */}
     <div style={{ flex: 1, overflowY: 'auto', background: '#FDF6EC', padding: '20px 0' }}>
