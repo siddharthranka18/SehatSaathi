@@ -12,15 +12,31 @@ const CHIPS = ['English', 'हिंदी', 'தமிழ்', 'বাংলা
 const FEATURES = [
   {
     title: 'Smart Triage',
-    body: 'Guided questions that lead to a clear urgency verdict — home care, visit PHC, or urgent.',
+    body: 'Guided questions that lead to a clear urgency verdict — home care, PHC, or urgent.',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C8A45A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+      </svg>
+    ),
   },
   {
     title: 'Verified Sources',
     body: 'Every answer grounded in WHO and ICMR medical guidelines, not open-ended AI guessing.',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C8A45A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+    ),
   },
   {
     title: 'Nearest PHC',
-    body: 'When you need in-person care, it points you to the closest primary health centre.',
+    body: 'Points you to the closest primary health centre when in-person care is needed.',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C8A45A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+        <circle cx="12" cy="10" r="3" />
+      </svg>
+    ),
   },
 ]
 
@@ -34,7 +50,6 @@ export default function Landing({ onStart }) {
   useEffect(() => {
     const q = QUOTES[quoteIdx]
     clearTimeout(timer.current)
-
     if (!erasing) {
       if (charIdx < q.length) {
         timer.current = setTimeout(() => {
@@ -57,77 +72,73 @@ export default function Landing({ onStart }) {
         }, 400)
       }
     }
-
     return () => clearTimeout(timer.current)
   }, [charIdx, erasing, quoteIdx])
 
   return (
     <>
-      <style>{STYLES}</style>
-      <div className="land-root">
+      <style>{CSS}</style>
+      <div className="l-root">
 
-        {/* ── Hero ── */}
-        <section className="land-hero">
-          <div className="land-dots" aria-hidden="true" />
+        {/* Hero */}
+        <section className="l-hero">
+          <div className="l-dots" aria-hidden="true" />
 
-          <span className="land-badge">AI-Powered Health Triage</span>
+          <span className="l-badge">AI-Powered Health Triage</span>
 
-          <h1 className="land-name">SehatSaathi</h1>
+          <h1 className="l-name">SehatSaathi</h1>
 
-          <div className="land-quote-wrap">
-            <span className="land-quote">
+          <div className="l-quote-wrap">
+            <span className="l-quote">
               {displayed}
-              <span className="land-cursor" aria-hidden="true" />
+              <span className="l-cursor" aria-hidden="true" />
             </span>
           </div>
 
-          <p className="land-sub">Speak in your language — we understand</p>
+          <p className="l-sub">Speak in your language — we understand</p>
 
-          <div className="land-chips" role="list" aria-label="Supported languages">
+          <div className="l-chips">
             {CHIPS.map((label, i) => (
-              <span
-                key={i}
-                role="listitem"
-                className={`land-chip${quoteIdx === i ? ' active' : ''}`}
-              >
+              <span key={i} className={`l-chip${quoteIdx === i ? ' l-chip-active' : ''}`}>
                 {label}
               </span>
             ))}
-            <span role="listitem" className="land-chip">+ more</span>
+            <span className="l-chip">+ more</span>
           </div>
 
-          <hr className="land-rule" aria-hidden="true" />
+          <hr className="l-rule" aria-hidden="true" />
 
-          <div className="land-trust">
-            <span className="land-trust-item">Voice Support</span>
-            <span className="land-trust-item">Verified Guidelines</span>
-            <span className="land-trust-item">Private & Safe</span>
+          <div className="l-trust">
+            <span className="l-trust-item">Voice Support</span>
+            <span className="l-trust-item">Verified Guidelines</span>
+            <span className="l-trust-item">Private & Safe</span>
           </div>
 
-          <button className="land-cta" onClick={onStart}>
+          <button className="l-cta" onClick={onStart}>
             Start Consultation
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="12 5 19 12 12 19" />
             </svg>
           </button>
         </section>
 
-        {/* ── Feature cards ── */}
-        <section className="land-features" aria-label="What SehatSaathi does">
+        {/* Feature cards */}
+        <section className="l-features">
           {FEATURES.map(f => (
-            <div className="land-feat" key={f.title}>
-              <div className="land-feat-accent" aria-hidden="true" />
-              <p className="land-feat-title">{f.title}</p>
-              <p className="land-feat-body">{f.body}</p>
+            <div className="l-feat" key={f.title}>
+              <div className="l-feat-accent" aria-hidden="true" />
+              <div className="l-feat-icon" aria-hidden="true">{f.icon}</div>
+              <p className="l-feat-title">{f.title}</p>
+              <p className="l-feat-body">{f.body}</p>
             </div>
           ))}
         </section>
 
-        {/* ── Footer strip ── */}
-        <footer className="land-footer">
-          <span>SehatSaathi</span>
-          <span>This is triage guidance, not a medical diagnosis.</span>
+        {/* Footer */}
+        <footer className="l-footer">
+          <span className="l-footer-name">SehatSaathi</span>
+          <span className="l-footer-note">This is triage guidance, not a medical diagnosis.</span>
         </footer>
 
       </div>
@@ -135,169 +146,166 @@ export default function Landing({ onStart }) {
   )
 }
 
-const STYLES = `
-  .land-root {
+const CSS = `
+  .l-root {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: #F5F4F0;
-    color: #0F1F2A;
+    background: #1B3A4B;
+    color: #F5F4F0;
     font-family: 'DM Sans', sans-serif;
     color-scheme: light !important;
   }
 
   /* ── Hero ── */
-  .land-hero {
-    background: #1B3A4B;
-    padding: 72px 48px 64px;
+  .l-hero {
+    padding: clamp(48px, 8vw, 72px) clamp(20px, 6vw, 48px) clamp(44px, 7vw, 64px);
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
     overflow: hidden;
-    flex-shrink: 0;
+    flex: 1;
   }
 
-  .land-dots {
+  .l-dots {
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(circle, rgba(245,244,240,0.07) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(245,244,240,0.055) 1px, transparent 1px);
     background-size: 28px 28px;
     pointer-events: none;
     z-index: 0;
   }
 
-  .land-badge {
+  .l-badge {
     position: relative;
     z-index: 1;
     display: inline-block;
     background: rgba(200,164,90,0.1);
-    border: 0.5px solid rgba(200,164,90,0.35);
+    border: 0.5px solid rgba(200,164,90,0.3);
     border-radius: 20px;
     padding: 5px 16px;
     color: #C8A45A;
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
 
-  .land-name {
+  .l-name {
     position: relative;
     z-index: 1;
     font-family: 'DM Serif Display', serif;
     color: #F5F4F0;
-    font-size: clamp(40px, 9vw, 70px);
+    font-size: clamp(38px, 9vw, 62px);
     font-weight: 400;
     line-height: 1.05;
     letter-spacing: -0.5px;
-    margin: 0 0 22px;
+    margin: 0 0 20px;
   }
 
-  .land-quote-wrap {
+  .l-quote-wrap {
     position: relative;
     z-index: 1;
-    min-height: clamp(26px, 4vw, 34px);
-    margin-bottom: 12px;
+    min-height: clamp(24px, 4vw, 30px);
+    margin-bottom: 10px;
     padding: 0 12px;
     width: 100%;
-    max-width: 580px;
+    max-width: 560px;
   }
 
-  .land-quote {
+  .l-quote {
     color: #C8A45A;
-    font-size: clamp(13px, 2.5vw, 17px);
+    font-size: clamp(13px, 2.5vw, 16px);
     font-weight: 300;
-    letter-spacing: 0.01em;
     font-style: italic;
+    letter-spacing: 0.01em;
   }
 
-  .land-cursor {
+  .l-cursor {
     display: inline-block;
     width: 1.5px;
     height: 1em;
     background: #C8A45A;
     margin-left: 2px;
     vertical-align: -0.1em;
-    animation: land-blink 1s step-end infinite;
+    animation: l-blink 1s step-end infinite;
   }
 
-  @keyframes land-blink {
+  @keyframes l-blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
   }
 
-  .land-sub {
+  .l-sub {
     position: relative;
     z-index: 1;
     color: #7A9BB0;
-    font-size: clamp(11px, 1.8vw, 13px);
-    font-weight: 400;
+    font-size: clamp(11px, 1.8vw, 12.5px);
     letter-spacing: 0.06em;
-    margin-bottom: 28px;
+    margin-bottom: 26px;
   }
 
-  .land-chips {
+  .l-chips {
     position: relative;
     z-index: 1;
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
     justify-content: center;
-    margin-bottom: 40px;
+    margin-bottom: 36px;
     padding: 0 8px;
   }
 
-  .land-chip {
-    border: 0.5px solid rgba(245,244,240,0.15);
+  .l-chip {
+    border: 0.5px solid rgba(245,244,240,0.12);
     border-radius: 20px;
-    padding: 4px 14px;
-    color: rgba(245,244,240,0.38);
+    padding: 4px 13px;
+    color: rgba(245,244,240,0.3);
     font-size: 12px;
     font-family: 'DM Sans', sans-serif;
     transition: all 0.35s ease;
     white-space: nowrap;
   }
 
-  .land-chip.active {
-    border-color: rgba(200,164,90,0.55);
-    color: #C8A45A;
-    background: rgba(200,164,90,0.08);
+  .l-chip-active {
+    border-color: rgba(200,164,90,0.5) !important;
+    color: #C8A45A !important;
+    background: rgba(200,164,90,0.08) !important;
   }
 
-  .land-rule {
+  .l-rule {
     position: relative;
     z-index: 1;
     width: 100%;
-    max-width: 400px;
+    max-width: 380px;
     border: none;
-    border-top: 0.5px solid rgba(245,244,240,0.1);
-    margin: 0 0 28px;
+    border-top: 0.5px solid rgba(245,244,240,0.08);
+    margin: 0 0 24px;
   }
 
-  .land-trust {
+  .l-trust {
     position: relative;
     z-index: 1;
     display: flex;
-    gap: clamp(16px, 4vw, 40px);
+    gap: clamp(14px, 4vw, 36px);
     justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 44px;
+    margin-bottom: 40px;
   }
 
-  .land-trust-item {
-    color: rgba(245,244,240,0.42);
+  .l-trust-item {
+    color: rgba(245,244,240,0.38);
     font-size: 12px;
-    font-family: 'DM Sans', sans-serif;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     white-space: nowrap;
   }
 
-  .land-trust-item::before {
+  .l-trust-item::before {
     content: '';
     display: inline-block;
     width: 5px;
@@ -307,15 +315,15 @@ const STYLES = `
     flex-shrink: 0;
   }
 
-  .land-cta {
+  .l-cta {
     position: relative;
     z-index: 1;
     background: #C8A45A;
     color: #1B3A4B;
     border: none;
     border-radius: 3px;
-    padding: 15px 44px;
-    font-size: 14px;
+    padding: 14px 44px;
+    font-size: 13.5px;
     font-family: 'DM Sans', sans-serif;
     font-weight: 500;
     cursor: pointer;
@@ -326,109 +334,112 @@ const STYLES = `
     transition: background 0.2s ease, transform 0.1s ease;
   }
 
-  .land-cta:hover { background: #D4B06A; }
-  .land-cta:active { transform: scale(0.985); }
+  .l-cta:hover { background: #D4B06A; }
+  .l-cta:active { transform: scale(0.985); }
 
   /* ── Features ── */
-  .land-features {
+  .l-features {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1px;
-    background: #E0DDD6;
-    border-top: 1px solid #E0DDD6;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    border-top: 1px solid #1F4257;
   }
 
-  .land-feat {
-    background: #F5F4F0;
-    padding: clamp(24px, 4vw, 36px) clamp(20px, 4vw, 36px);
+  .l-feat {
+    background: #16303F;
+    border-right: 1px solid #1F4257;
+    padding: clamp(20px, 3vw, 28px) clamp(18px, 3vw, 28px) clamp(20px, 3vw, 28px) clamp(16px, 2.5vw, 26px);
     position: relative;
-    overflow: hidden;
   }
 
-  .land-feat-accent {
+  .l-feat:last-child { border-right: none; }
+
+  .l-feat-accent {
     position: absolute;
     top: 0;
     left: 0;
     width: 2px;
     height: 100%;
     background: #C8A45A;
-    opacity: 0.5;
+    opacity: 0.7;
+    border-radius: 0;
   }
 
-  .land-feat-title {
-    font-size: 14px;
+  .l-feat-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 3px;
+    background: rgba(200,164,90,0.1);
+    border: 0.5px solid rgba(200,164,90,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+
+  .l-feat-title {
+    font-size: 13px;
     font-weight: 500;
-    color: #0F1F2A;
-    margin-bottom: 8px;
+    color: #F5F4F0;
+    margin-bottom: 7px;
     letter-spacing: 0.01em;
   }
 
-  .land-feat-body {
-    font-size: 13px;
-    color: #6B7B8A;
+  .l-feat-body {
+    font-size: 12px;
+    color: #7A9BB0;
     line-height: 1.65;
-    font-weight: 400;
   }
 
   /* ── Footer ── */
-  .land-footer {
+  .l-footer {
     background: #132C3A;
-    padding: 16px clamp(20px, 5vw, 48px);
+    border-top: 1px solid #1F4257;
+    padding: 14px clamp(20px, 5vw, 48px);
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: auto;
   }
 
-  .land-footer span:first-child {
+  .l-footer-name {
     font-family: 'DM Serif Display', serif;
     color: #F5F4F0;
-    font-size: 14px;
+    font-size: 13px;
   }
 
-  .land-footer span:last-child {
-    color: rgba(245,244,240,0.35);
+  .l-footer-note {
+    color: #3D6478;
     font-size: 11px;
-    font-weight: 400;
     letter-spacing: 0.03em;
   }
 
   /* ── Responsive ── */
   @media (max-width: 640px) {
-    .land-hero {
-      padding: 52px 20px 48px;
-    }
-    .land-cta {
+    .l-cta {
       width: 100%;
-      max-width: 320px;
+      max-width: 300px;
       justify-content: center;
-      padding: 15px 24px;
     }
-    .land-trust {
-      gap: 14px;
-    }
-    .land-features {
+    .l-features {
       grid-template-columns: 1fr;
     }
-    .land-footer {
+    .l-feat {
+      border-right: none;
+      border-bottom: 1px solid #1F4257;
+    }
+    .l-feat:last-child {
+      border-bottom: none;
+    }
+    .l-footer {
       flex-direction: column;
       text-align: center;
     }
   }
 
   @media (max-width: 380px) {
-    .land-badge {
-      font-size: 10px;
-      padding: 4px 12px;
-    }
-    .land-chips {
-      gap: 6px;
-    }
-    .land-chip {
-      font-size: 11px;
-      padding: 3px 10px;
-    }
+    .l-badge { font-size: 9.5px; padding: 4px 12px; }
+    .l-chip { font-size: 11px; padding: 3px 10px; }
+    .l-trust { gap: 12px; }
   }
 `
