@@ -147,15 +147,18 @@ export default function Landing({ onStart }) {
 }
 
 const CSS = `
-  .l-root {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: #1B3A4B;
-    color: #F5F4F0;
-    font-family: 'DM Sans', sans-serif;
-    color-scheme: light !important;
-  }
+ .l-root {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #1B3A4B;
+  color: #F5F4F0;
+  font-family: 'DM Sans', sans-serif;
+  color-scheme: light !important;
+  margin: 0;
+  padding: 0;
+}
 
   /* ── Hero ── */
   .l-hero {
