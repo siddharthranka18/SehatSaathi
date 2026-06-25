@@ -30,17 +30,47 @@ export default function Home({ onBack }) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  // TTS — speaks AI replies aloud when enabled
-  const speak = useCallback((text) => {
-    if (!ttsEnabled) return
-    if (!window.speechSynthesis) return
-    window.speechSynthesis.cancel()
-    const utt = new SpeechSynthesisUtterance(text)
+  // pre-load voices as soon as component mounts
+useEffect(() => {
+  const loadVoices = () => window.speechSynthesis.getVoices()
+  loadVoices()
+  window.speechSynthesis.onvoiceschanged = loadVoices
+}, [])
+const speak = useCallback((text) => {
+  if (!ttsEnabled) return
+  if (!window.speechSynthesis) return
+  window.speechSynthesis.cancel()
+
+  const utt = new SpeechSynthesisUtterance(text)
+  utt.rate = 0.88
+  utt.pitch = 1
+
+  // detect language from the text itself
+  const hindiPattern = /[\u0900-\u097F]/  // Devanagari unicode range
+  const tamilPattern = /[\u0B80-\u0BFF]/  // Tamil unicode range
+  const bengaliPattern = /[\u0980-\u09FF]/ // Bengali unicode range
+
+  if (hindiPattern.test(text)) {
+    utt.lang = 'hi-IN'
+  } else if (tamilPattern.test(text)) {
+    utt.lang = 'ta-IN'
+  } else if (bengaliPattern.test(text)) {
+    utt.lang = 'bn-IN'
+  } else {
     utt.lang = 'en-IN'
-    utt.rate = 0.92
-    utt.pitch = 1
-    window.speechSynthesis.speak(utt)
-  }, [ttsEnabled])
+  }
+
+  // try to find a matching voice for the detected language
+  const voices = window.speechSynthesis.getVoices()
+  const matchingVoice = voices.find(v => v.lang === utt.lang)
+    || voices.find(v => v.lang.startsWith(utt.lang.split('-')[0]))
+
+  if (matchingVoice) {
+    utt.voice = matchingVoice
+  }
+
+  window.speechSynthesis.speak(utt)
+}, [ttsEnabled])
 
   // stop TTS when component unmounts or user goes back
   useEffect(() => {

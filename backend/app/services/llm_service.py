@@ -25,7 +25,7 @@ from .web_search_service import web_search_fallback
 # ENV + GROQ
 # ==========================
 
-BASE_DIR = Path(__file__).resolve().parents[3]
+BASE_DIR = Path(__file__).resolve().parents[2]
 
 load_dotenv(
     BASE_DIR / ".env"

@@ -39,31 +39,26 @@ print("RAG IMPORT COMPLETE - NO ML LOADED")
 # PATHS
 # =============================
 
-BASE_DIR = Path(__file__).resolve().parents[3]
+BASE_DIR = Path(__file__).resolve().parents[2]
 
 load_dotenv(BASE_DIR / ".env")
 
 
 GUIDELINES_DIR = (
     BASE_DIR /
-    "backend" /
     "data" /
     "guidelines"
 )
-
-
 INDEX_DIR = (
     BASE_DIR /
-    "backend" /
     "data" /
     "rag_index"
 )
 
-
 COLLECTION_NAME = "medical_guidelines"
 
 
-EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
+EMBEDDING_MODEL_NAME = "paraphrase-MiniLM-L3-v2"
 
 
 RERANKER_MODEL_NAME = (
@@ -106,45 +101,26 @@ def get_qdrant():
 
         host = os.getenv(
             "QDRANT_HOST",
-            "local"
+            "localhost"
         )
 
 
         print(
-            "QDRANT MODE:",
+            "Connecting Qdrant:",
             host
         )
 
 
-        if host == "local":
+        _qdrant = QdrantClient(
 
+            host=host,
 
-            _qdrant = QdrantClient(
+            port=6333
 
-                path=str(
-                    BASE_DIR /
-                    "backend" /
-                    "data" /
-                    "qdrant"
-                )
-
-            )
-
-
-        else:
-
-
-            _qdrant = QdrantClient(
-
-                host=host,
-
-                port=6333
-
-            )
+        )
 
 
     return _qdrant
-
 
 
 
