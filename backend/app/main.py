@@ -1,36 +1,53 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from app.routers import triage
+
 from app.services.rag_service import (
     INDEX_DIR,
     build_index,
-    load_index,           # ← was load_storage, correct name is load_index
+    load_index,
     get_embedding_model,
     get_reranker,
+    get_qdrant,
+    COLLECTION_NAME,
 )
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+
     print("SehatSaathi backend starting...")
-    store_path = INDEX_DIR / "store.json"
-    if store_path.exists():
-        print("Loading existing RAG index...")
-        load_index()
-        print("Pre-loading embedding model...")
-        get_embedding_model()
-        print("Pre-loading reranker...")
-        get_reranker()
-    else:
-        print("First run — building RAG index...")
+
+    qdrant = get_qdrant()
+
+    collections = [
+        c.name
+        for c in qdrant.get_collections().collections
+    ]
+
+    if COLLECTION_NAME not in collections:
+        print("Qdrant collection not found.")
+        print("Building RAG index...")
         build_index()
-        get_embedding_model()
-        get_reranker()
+    else:
+        print("Existing Qdrant collection found.")
+        load_index()
+
+    print("Pre-loading embedding model...")
+    get_embedding_model()
+
+    print("Pre-loading reranker...")
+    get_reranker()
+
     print("All models loaded. Server ready.")
+
     yield
 
 
+# ← this was missing entirely
 app = FastAPI(
     title="SehatSaathi API",
     lifespan=lifespan

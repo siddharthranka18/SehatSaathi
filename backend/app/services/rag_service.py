@@ -16,13 +16,11 @@ import uuid
 import glob
 
 from pathlib import Path
-
 from dotenv import load_dotenv
 
 import numpy as np
 
 from qdrant_client import QdrantClient
-
 from qdrant_client.models import (
     VectorParams,
     Distance,
@@ -49,16 +47,21 @@ GUIDELINES_DIR = (
     "data" /
     "guidelines"
 )
+
+
 INDEX_DIR = (
     BASE_DIR /
     "data" /
     "rag_index"
 )
 
+
 COLLECTION_NAME = "medical_guidelines"
 
 
-EMBEDDING_MODEL_NAME = "paraphrase-MiniLM-L3-v2"
+EMBEDDING_MODEL_NAME = (
+    "all-MiniLM-L6-v2"
+)
 
 
 RERANKER_MODEL_NAME = (
@@ -66,8 +69,7 @@ RERANKER_MODEL_NAME = (
 )
 
 
-# cross encoder score threshold
-CONFIDENCE_THRESHOLD = -3
+CONFIDENCE_THRESHOLD = 0.35
 
 
 
@@ -75,14 +77,15 @@ CONFIDENCE_THRESHOLD = -3
 # GLOBALS
 # =============================
 
+
 _embedding_model = None
 _reranker_model = None
 _qdrant = None
 _bm25 = None
 
-
 chunks = []
 parent_docs = {}
+chunk_lookup = {}
 
 
 
@@ -95,32 +98,25 @@ def get_qdrant():
 
     global _qdrant
 
-
     if _qdrant is None:
-
 
         host = os.getenv(
             "QDRANT_HOST",
             "localhost"
         )
 
-
         print(
             "Connecting Qdrant:",
             host
         )
 
-
         _qdrant = QdrantClient(
-
             host=host,
-
             port=6333
-
         )
 
-
     return _qdrant
+
 
 
 
@@ -131,34 +127,21 @@ def get_qdrant():
 
 def get_embedding_model():
 
-
     global _embedding_model
-
 
     if _embedding_model is None:
 
-
-        print(
-            "Loading embedding model..."
-        )
-
+        print("Loading embedding model")
 
         from sentence_transformers import (
             SentenceTransformer
         )
 
-
         _embedding_model = SentenceTransformer(
-
             EMBEDDING_MODEL_NAME
-
         )
 
-
-        print(
-            "Embedding loaded"
-        )
-
+        print("Embedding loaded")
 
     return _embedding_model
 
@@ -168,29 +151,19 @@ def get_embedding_model():
 
 def get_reranker():
 
-
     global _reranker_model
-
 
     if _reranker_model is None:
 
-
-        print(
-            "Loading reranker..."
-        )
-
+        print("Loading reranker")
 
         from sentence_transformers import (
             CrossEncoder
         )
 
-
         _reranker_model = CrossEncoder(
-
             RERANKER_MODEL_NAME
-
         )
-
 
     return _reranker_model
 
@@ -208,56 +181,50 @@ def create_parent_child_chunks(
         source
 ):
 
+    result=[]
 
-    result = []
-
-
-    sections = [
-
+    sections=[
         s.strip()
-
         for s in text.split("\n\n")
-
         if s.strip()
-
     ]
 
 
     for section in sections:
 
+        parent_id=str(uuid.uuid4())
 
-        parent_id = str(uuid.uuid4())
 
+        parent_docs[parent_id]={
 
-        parent_docs[parent_id] = {
+            "text":section,
 
-            "text": section,
-
-            "source": source
+            "source":source
 
         }
 
 
-
-        for sentence in section.split("."):
-
-
-            sentence = sentence.strip()
+        sentences=section.split(".")
 
 
-            if len(sentence) < 30:
+        for sentence in sentences:
+
+
+            sentence=sentence.strip()
+
+
+            if len(sentence)<30:
 
                 continue
 
 
-
             result.append({
 
-                "text": sentence,
+                "text":sentence,
 
-                "parent_id": parent_id,
+                "parent_id":parent_id,
 
-                "source": source
+                "source":source
 
             })
 
@@ -275,17 +242,27 @@ def create_parent_child_chunks(
 
 def build_index():
 
-
     global chunks
     global _bm25
 
 
-
-    qdrant = get_qdrant()
-
+    qdrant=get_qdrant()
 
 
-    qdrant.recreate_collection(
+    existing=[
+        c.name
+        for c in qdrant.get_collections().collections
+    ]
+
+
+    if COLLECTION_NAME in existing:
+
+        qdrant.delete_collection(
+            COLLECTION_NAME
+        )
+
+
+    qdrant.create_collection(
 
         collection_name=COLLECTION_NAME,
 
@@ -301,22 +278,20 @@ def build_index():
 
 
 
-    all_chunks = []
+    all_chunks=[]
 
 
 
     for file in glob.glob(
-        str(GUIDELINES_DIR / "*.txt")
+        str(GUIDELINES_DIR/"*.txt")
     ):
-
 
         with open(
             file,
             encoding="utf-8"
         ) as f:
 
-            text = f.read()
-
+            text=f.read()
 
 
         all_chunks.extend(
@@ -333,17 +308,22 @@ def build_index():
 
 
 
-    texts = [
+    if not all_chunks:
 
+        raise RuntimeError(
+            "No guideline documents found"
+        )
+
+
+
+    texts=[
         c["text"]
-
         for c in all_chunks
-
     ]
 
 
 
-    embeddings = get_embedding_model().encode(
+    embeddings=get_embedding_model().encode(
 
         texts,
 
@@ -353,13 +333,12 @@ def build_index():
 
 
 
-    points = []
+    points=[]
 
 
-
-    for chunk, vector in zip(
-            all_chunks,
-            embeddings
+    for chunk,vector in zip(
+        all_chunks,
+        embeddings
     ):
 
 
@@ -388,12 +367,10 @@ def build_index():
     )
 
 
-
-    _bm25 = BM25Okapi(
+    _bm25=BM25Okapi(
 
         [
             t.lower().split()
-
             for t in texts
         ]
 
@@ -408,7 +385,7 @@ def build_index():
 
 
     with open(
-        INDEX_DIR / "store.json",
+        INDEX_DIR/"store.json",
         "w",
         encoding="utf-8"
     ) as f:
@@ -417,8 +394,11 @@ def build_index():
         json.dump(
 
             {
-                "chunks": all_chunks,
-                "parents": parent_docs
+
+            "chunks":all_chunks,
+
+            "parents":parent_docs
+
             },
 
             f
@@ -435,17 +415,16 @@ def build_index():
 
 
 # =============================
-# LOAD INDEX
+# LOAD
 # =============================
 
 
 def load_index():
 
-
     global chunks
     global parent_docs
+    global chunk_lookup
     global _bm25
-
 
 
     if chunks:
@@ -453,34 +432,33 @@ def load_index():
         return
 
 
-
     with open(
-
-        INDEX_DIR / "store.json",
-
+        INDEX_DIR/"store.json",
         encoding="utf-8"
-
     ) as f:
 
-
-        data = json.load(f)
-
+        data=json.load(f)
 
 
-    chunks = data["chunks"]
+    chunks=data["chunks"]
 
-    parent_docs = data["parents"]
+    parent_docs=data["parents"]
 
 
+    chunk_lookup={
 
-    _bm25 = BM25Okapi(
+        c["text"]:c
+
+        for c in chunks
+
+    }
+
+
+    _bm25=BM25Okapi(
 
         [
-
             c["text"].lower().split()
-
             for c in chunks
-
         ]
 
     )
@@ -496,23 +474,20 @@ def load_index():
 
 def rrf(results):
 
-
-    scores = {}
+    scores={}
 
 
     for ranking in results:
 
+        for i,item in enumerate(ranking):
 
-        for i, item in enumerate(ranking):
+            scores[item]=(
 
-
-            scores[item] = (
-
-                scores.get(item, 0)
+                scores.get(item,0)
 
                 +
 
-                1 / (60+i)
+                1/(60+i)
 
             )
 
@@ -532,20 +507,18 @@ def rrf(results):
 
 
 # =============================
-# RETRIEVE PIPELINE
+# RETRIEVE
 # =============================
 
 
-def retrieve_context(query, top_k=3):
+def retrieve_context(query,top_k=3):
 
 
     load_index()
 
 
 
-    # Dense retrieval
-
-    vector = get_embedding_model().encode(
+    vector=get_embedding_model().encode(
 
         query,
 
@@ -554,8 +527,7 @@ def retrieve_context(query, top_k=3):
     )
 
 
-
-    dense = get_qdrant().query_points(
+    dense=get_qdrant().query_points(
 
         collection_name=COLLECTION_NAME,
 
@@ -566,40 +538,34 @@ def retrieve_context(query, top_k=3):
     )
 
 
-    dense_results = [
+    dense_results=[
 
-        point.payload["text"]
+        p.payload["text"]
 
-        for point in dense.points
+        for p in dense.points
 
     ]
 
 
 
-
-    # BM25 retrieval
-
-    scores = _bm25.get_scores(
+    bm25_scores=_bm25.get_scores(
 
         query.lower().split()
 
     )
 
 
-    sparse = [
+    sparse=[
 
         chunks[i]["text"]
 
-        for i in np.argsort(scores)[::-1][:10]
+        for i in np.argsort(bm25_scores)[::-1][:10]
 
     ]
 
 
 
-
-    # Fusion
-
-    fused = rrf(
+    fused=rrf(
 
         [
             dense_results,
@@ -609,109 +575,82 @@ def retrieve_context(query, top_k=3):
     )
 
 
-
-
-    # Parent retrieval
-
-    parents = []
+    parents=[]
 
 
     for text in fused:
 
 
-        for c in chunks:
+        c=chunk_lookup.get(text)
 
 
-            if c["text"] == text:
+        if c:
+
+            parents.append(
+
+                parent_docs[
+                    c["parent_id"]
+                ]["text"]
+
+            )
 
 
-                parents.append(
-
-                    parent_docs[
-                        c["parent_id"]
-                    ]["text"]
-
-                )
-
-
-
-    parents = list(set(parents))
+    parents=list(set(parents))
 
 
 
     if not parents:
 
-
         return {
 
-            "chunks": [],
+            "chunks":[],
 
-            "top_score": 0,
+            "top_score":0,
 
-            "confident": False
+            "confident":False
 
         }
 
 
 
+    scores=get_reranker().predict(
 
-    # rerank
+        [
+            (query,p)
 
-    pairs = [
-
-        (query, p)
-
-        for p in parents
-
-    ]
-
-
-    scores = get_reranker().predict(
-
-        pairs
+            for p in parents
+        ]
 
     )
 
 
 
-    ranked = sorted(
+    ranked=sorted(
 
         zip(
             parents,
             scores
         ),
 
-        key=lambda x: x[1],
+        key=lambda x:x[1],
 
         reverse=True
 
     )
 
 
+    top_score=float(ranked[0][1])
 
-
-    print("\n========== RAG DEBUG ==========")
-
-    print("QUERY:", query)
 
     print(
-        "TOP SCORE:",
-        float(ranked[0][1])
+        "RAG SCORE:",
+        top_score
     )
-
-    print(
-        "TOP CHUNK:",
-        ranked[0][0][:300]
-    )
-
-    print("===============================\n")
-
-
 
 
     return {
 
-        "chunks": [
+        "chunks":[
 
             x[0]
 
@@ -719,24 +658,18 @@ def retrieve_context(query, top_k=3):
 
         ],
 
-        "top_score":
-
-            float(ranked[0][1]),
-
+        "top_score":top_score,
 
         "confident":
 
-            ranked[0][1]
-
-            >
-
-            CONFIDENCE_THRESHOLD
+            top_score > CONFIDENCE_THRESHOLD
 
     }
 
 
 
 
-if __name__ == "__main__":
+
+if __name__=="__main__":
 
     build_index()
