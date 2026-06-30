@@ -535,10 +535,14 @@ def retrieve_context(query, top_k=3):
         query=vector.tolist(),
         limit=10
     )
-    dense_results = [
-        p.payload["text"]
-        for p in dense.points
-    ]
+    
+    # 3. Track explicit dense payload strings and raw scores concurrently
+    dense_results = []
+    dense_scores = []
+    for point in dense.points:
+        dense_results.append(point.payload["text"])
+        dense_scores.append(float(point.score))
+        
     timings["dense"] = round(time.perf_counter() - t0, 4)
 
     # --- BM25 retrieval ---
@@ -560,7 +564,6 @@ def retrieve_context(query, top_k=3):
     # --- Parent retrieval ---
     t0 = time.perf_counter()
     parents = []
-    retrieved_sources_set = set()
 
     for text in fused:
         c = chunk_lookup.get(text)
@@ -568,14 +571,9 @@ def retrieve_context(query, top_k=3):
             parents.append(
                 parent_docs[c["parent_id"]]["text"]
             )
-            retrieved_sources_set.add(c.get("source", ""))
 
     parents = list(set(parents))
     timings["parent"] = round(time.perf_counter() - t0, 4)
-
-    retrieved_sources = sorted(
-        [s for s in retrieved_sources_set if s]
-    )
 
     if not parents:
         timings["reranker"] = 0.0
@@ -591,6 +589,15 @@ def retrieve_context(query, top_k=3):
             "bm25_hits": len(sparse),
             "parent_hits": 0,
             "retrieved_chunks": 0,
+            "dense_scores": [],
+            "reranker_scores": [],
+            "retrieval_stats": {
+                "query": query,
+                "candidate_chunks": len(fused),
+                "parent_documents": 0,
+                "reranked_documents": 0,
+                "returned_documents": top_k
+            },
             "timings": timings,
         }
 
@@ -613,20 +620,45 @@ def retrieve_context(query, top_k=3):
 
     top_score = float(ranked[0][1])
 
+    # 1. Map reranked parent documents back to their source files
+    top_sources = []
+    for parent, _ in ranked[:top_k]:
+        for pid, doc in parent_docs.items():
+            if doc["text"] == parent:
+                top_sources.append(doc["source"])
+                break
+    top_sources = list(dict.fromkeys(top_sources))
+
+    # 2. Package cross-encoder evaluation scores array
+    reranker_scores = [
+        float(score)
+        for _, score in ranked[:top_k]
+    ]
+
     print("RAG SCORE:", top_score)
 
+    # 4. Return unified contextual execution payload dictionary
     return {
         "chunks": [
             x[0] for x in ranked[:top_k]
         ],
         "top_score": top_score,
         "confident": top_score > CONFIDENCE_THRESHOLD,
-        "retrieved_sources": retrieved_sources,
+        "retrieved_sources": top_sources,
         "dense_hits": len(dense_results),
         "bm25_hits": len(sparse),
         "parent_hits": len(parents),
         "retrieved_chunks": len(ranked[:top_k]),
-        "timings": timings,
+        "dense_scores": dense_scores,
+        "reranker_scores": reranker_scores,
+        "retrieval_stats": {
+            "query": query,
+            "candidate_chunks": len(fused),
+            "parent_documents": len(parents),
+            "reranked_documents": len(ranked),
+            "returned_documents": top_k
+        },
+        "timings": timings
     }
 
 

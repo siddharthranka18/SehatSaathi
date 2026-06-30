@@ -11,3 +11,5 @@ pydantic
 rank_bm25
 numpy==1.26.4
 qdrant-client
+matplotlib
+requests

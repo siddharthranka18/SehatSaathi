@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-from typing import List, Optional, Literal
+from pydantic import BaseModel, Field
+from typing import List, Literal, Dict
 
 
 class Message(BaseModel):
@@ -14,14 +14,90 @@ class TriageRequest(BaseModel):
 
 class TriageResponse(BaseModel):
     reply: str
-    urgency: Optional[Literal["home_care", "visit_phc", "critical", "unclear"]] = None
-    is_final: bool = False
-    source: Optional[str] = None
-    sources: Optional[List[str]] = None
-    confidence: float = 0.0
-    retrieved_sources: list[str] = []
-    pipeline_timings: dict = {}
-    rag_timings: dict = {}
-    dense_hits: int = 0
-    bm25_hits: int = 0
-    retrieved_chunks: int = 0
+    urgency: str
+    is_final: bool
+    source: str
+
+    # =========================
+    # Evaluation Metrics
+    # =========================
+
+    confidence: float = Field(
+        default=0.0,
+        description="CrossEncoder confidence score"
+    )
+
+    retrieved_sources: List[str] = Field(
+        default_factory=list,
+        description="Guideline files used for retrieval"
+    )
+
+    pipeline_timings: Dict[str, float] = Field(
+        default_factory=dict,
+        description="Timing of each pipeline stage"
+    )
+
+    rag_timings: Dict[str, float] = Field(
+        default_factory=dict,
+        description="Detailed RAG timing breakdown"
+    )
+
+    dense_hits: int = Field(
+        default=0,
+        description="Number of dense retrieval candidates"
+    )
+
+    bm25_hits: int = Field(
+        default=0,
+        description="Number of BM25 retrieval candidates"
+    )
+
+    retrieved_chunks: int = Field(
+        default=0,
+        description="Number of parent chunks after fusion"
+    )
+
+    parent_hits: int = Field(
+        default=0,
+        description="Number of parent documents retrieved"
+    )
+
+    rewritten_query: str = Field(
+        default="",
+        description="LLM rewritten query used for retrieval"
+    )
+
+    rag_confident: bool = Field(
+        default=False,
+        description="Whether RAG confidence exceeded threshold"
+    )
+
+    retrieval_method: str = Field(
+        default="",
+        description="Hybrid RAG or Web Fallback"
+    )
+
+    context_length: int = Field(
+        default=0,
+        description="Number of characters passed to the LLM as context"
+    )
+
+    dense_scores: List[float] = Field(
+        default_factory=list,
+        description="Top dense retrieval similarity scores"
+    )
+
+    reranker_scores: List[float] = Field(
+        default_factory=list,
+        description="Top CrossEncoder reranker scores"
+    )
+
+    retrieval_stats: Dict[str, float] = Field(
+        default_factory=dict,
+        description="Additional retrieval statistics"
+    )
+
+    conversation_turns: int = Field(
+        default=0,
+        description="Number of conversation turns"
+    )

@@ -91,6 +91,7 @@ const speak = useCallback((text) => {
     setInput('')
     setLoading(true)
 
+    const fetchStart = performance.now()
     try {
       const res = await fetch('/api/triage', {
         method: 'POST',
@@ -101,12 +102,16 @@ const speak = useCallback((text) => {
         }),
       })
       const data = await res.json()
+      const clientLatency = (performance.now() - fetchStart) / 1000
       const aiMsg = {
         role: 'assistant',
         content: data.reply,
         source: data.source,
         urgency: data.urgency,
         is_final: data.is_final,
+        confidence: data.confidence || 0,
+        retrievedSources: data.retrieved_sources || [],
+        latency: data.pipeline_timings?.total || clientLatency,
       }
       setMessages([...updated, aiMsg])
       speak(data.reply)
@@ -117,6 +122,9 @@ const speak = useCallback((text) => {
         source: null,
         urgency: null,
         is_final: false,
+        confidence: 0,
+        retrievedSources: [],
+        latency: 0,
       }
       setMessages([...updated, errMsg])
     }
@@ -206,7 +214,7 @@ const speak = useCallback((text) => {
             {messages.map((m, i) => (
               <div key={i}>
                 <ChatBubble role={m.role} content={m.content} source={m.source} />
-                {m.is_final && <TriageCard urgency={m.urgency} source={m.source} />}
+                {m.is_final && <TriageCard urgency={m.urgency} source={m.source} confidence={m.confidence} retrievedSources={m.retrievedSources} latency={m.latency} />}
               </div>
             ))}
 

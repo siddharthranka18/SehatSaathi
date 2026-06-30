@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SehatSaathi Evaluation Report</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0f2027;
+            color: #F5F4F0;
+            min-height: 100vh;
+            padding: 32px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #C8A45A;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: #7A9BB0;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+        .section {
+            background: #1B3A4B;
+            border: 1px solid #1F4257;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #C8A45A;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #1F4257;
+            }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            text-align: left;
+            padding: 8px 12px;
+            color: #7A9BB0;
+            font-size: 13px;
+            border-bottom: 1px solid #1F4257;
+        }
+        td {
+            border-bottom: 1px solid rgba(31,66,87,0.5);
+        }
+        .charts-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SehatSaathi Evaluation Report</h1>
+        <p class="subtitle">Automated evaluation of triage accuracy, latency, and retrieval performance</p>
+
+        <div class="section">
+            <div class="section-title">Metrics Summary</div>
+            <table>
+                <thead>
+                    <tr><th>Metric</th><th>Value</th></tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">accuracy</td>
+            <td style="padding:8px 12px;color:#F5F4F0">45.79</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">total_cases</td>
+            <td style="padding:8px 12px;color:#F5F4F0">107</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">rag_cases</td>
+            <td style="padding:8px 12px;color:#F5F4F0">15</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">web_cases</td>
+            <td style="padding:8px 12px;color:#F5F4F0">84</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">mean_latency_seconds</td>
+            <td style="padding:8px 12px;color:#F5F4F0">9.842</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">average_dense_hits</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">average_bm25_hits</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">average_parent_hits</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">average_retrieved_chunks</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">average_conversation_turns</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">rag_confident_cases</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">web_fallback_cases</td>
+            <td style="padding:8px 12px;color:#F5F4F0">107</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">guideline_usage</td>
+            <td style="padding:8px 12px;color:#F5F4F0">{}</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">avg_confidence</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">max_confidence</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">min_confidence</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">retrieval_accuracy</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">rewrite_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">rag_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">llm_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">json_parse_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">safety_check_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">output_safety_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">web_fallback_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">pipeline_total_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">median_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">9.764</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">p95_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">21.127</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">p99_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">23.429</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">embedding_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">dense_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">bm25_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">rrf_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">parent_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">reranker_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">retrieval_total_latency</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">avg_dense_hits</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">avg_bm25_hits</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">avg_parent_hits</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">avg_retrieved_chunks</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0.0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">fastest_query</td>
+            <td style="padding:8px 12px;color:#F5F4F0">Fever with unconsciousness</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">slowest_query</td>
+            <td style="padding:8px 12px;color:#F5F4F0">Mild stomach pain after eating spicy food</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">source_medical_guideline_rag_count</td>
+            <td style="padding:8px 12px;color:#F5F4F0">15</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">source_web_fallback_count</td>
+            <td style="padding:8px 12px;color:#F5F4F0">84</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">source_output_guardrail_count</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">source_safety_override_count</td>
+            <td style="padding:8px 12px;color:#F5F4F0">6</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 12px;color:#C8A45A;font-weight:500">source_json_parse_error_count</td>
+            <td style="padding:8px 12px;color:#F5F4F0">0</td>
+        </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Confusion Matrix</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="padding:10px">Expected ↓ / Predicted →</th>
+                        <th style="padding:10px;color:#7A9BB0">home_care</th><th style="padding:10px;color:#7A9BB0">visit_phc</th><th style="padding:10px;color:#7A9BB0">critical</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td style="padding:10px;font-weight:600;color:#C8A45A">home_care</td><td style="background:#2d4a3e;padding:10px;text-align:center;font-weight:600">25</td><td style="background:#1B3A4B;padding:10px;text-align:center;font-weight:600">0</td><td style="background:#1B3A4B;padding:10px;text-align:center;font-weight:600">0</td></tr><tr><td style="padding:10px;font-weight:600;color:#C8A45A">visit_phc</td><td style="background:#1B3A4B;padding:10px;text-align:center;font-weight:600">0</td><td style="background:#2d4a3e;padding:10px;text-align:center;font-weight:600">1</td><td style="background:#1B3A4B;padding:10px;text-align:center;font-weight:600">1</td></tr><tr><td style="padding:10px;font-weight:600;color:#C8A45A">critical</td><td style="background:#1B3A4B;padding:10px;text-align:center;font-weight:600">0</td><td style="background:#1B3A4B;padding:10px;text-align:center;font-weight:600">0</td><td style="background:#2d4a3e;padding:10px;text-align:center;font-weight:600">23</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Charts</div>
+            <div class="charts-grid">
+                <p style="color:#7A9BB0">Charts not generated (matplotlib not available)</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

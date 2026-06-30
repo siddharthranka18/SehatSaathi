@@ -55,7 +55,7 @@ def generate_report_html(report, confusion_data, chart_paths):
     for expected in labels:
         cells = ""
         for predicted in labels:
-            val = cm[expected][predicted]
+            val = cm[expected].get(predicted, 0)
             bg = "#2d4a3e" if expected == predicted else "#1B3A4B"
             cells += f'<td style="background:{bg};padding:10px;text-align:center;font-weight:600">{val}</td>'
         cm_rows += f'<tr><td style="padding:10px;font-weight:600;color:#C8A45A">{expected}</td>{cells}</tr>'
@@ -121,7 +121,7 @@ def generate_report_html(report, confusion_data, chart_paths):
             margin-bottom: 16px;
             padding-bottom: 8px;
             border-bottom: 1px solid #1F4257;
-        }}
+            }}
         table {{
             width: 100%;
             border-collapse: collapse;
@@ -148,7 +148,6 @@ def generate_report_html(report, confusion_data, chart_paths):
         <h1>SehatSaathi Evaluation Report</h1>
         <p class="subtitle">Automated evaluation of triage accuracy, latency, and retrieval performance</p>
 
-        <!-- Metrics Summary -->
         <div class="section">
             <div class="section-title">Metrics Summary</div>
             <table>
@@ -161,7 +160,6 @@ def generate_report_html(report, confusion_data, chart_paths):
             </table>
         </div>
 
-        <!-- Confusion Matrix -->
         <div class="section">
             <div class="section-title">Confusion Matrix</div>
             <table>
@@ -177,7 +175,6 @@ def generate_report_html(report, confusion_data, chart_paths):
             </table>
         </div>
 
-        <!-- Charts -->
         <div class="section">
             <div class="section-title">Charts</div>
             <div class="charts-grid">
@@ -196,6 +193,41 @@ def generate_report_html(report, confusion_data, chart_paths):
 
 def main():
     metrics = EvaluationMetrics()
+
+    # 1. Aligned pipeline total tracking dictionary keys
+    pipeline_totals = {
+        "rewrite": 0,
+        "rag": 0,
+        "llm": 0,
+        "json_parse": 0,
+        "safety_check": 0,
+        "output_safety": 0,
+        "web_fallback": 0,
+        "total": 0,
+    }
+
+    rag_totals = {
+        "embedding": 0,
+        "dense": 0,
+        "bm25": 0,
+        "rrf": 0,
+        "parent": 0,
+        "reranker": 0,
+        "total": 0,
+    }
+
+    retrieval_correct = 0
+    retrieval_total = 0
+    
+    source_distribution = {
+        "medical_guideline_rag": 0,
+        "web_fallback": 0,
+        "output_guardrail": 0,
+        "safety_override": 0,
+        "json_parse_error": 0
+    }
+
+    results = []
 
     with open(TEST_FILE, encoding="utf-8") as f:
         tests = json.load(f)
@@ -236,23 +268,66 @@ def main():
             confidence = result.get("confidence", 0)
             pipeline_timings = result.get("pipeline_timings", {})
             rag_timings = result.get("rag_timings", {})
+            retrieved_sources = result.get("retrieved_sources", [])
         else:
             predicted = "ERROR"
             source = "ERROR"
             confidence = 0
             pipeline_timings = {}
             rag_timings = {}
+            retrieved_sources = []
 
-        metrics.add_result(
-            expected=test["expected_urgency"],
-            predicted=predicted,
-            latency=latency,
-            source=source,
-            confidence=confidence,
-            json_ok=json_ok,
-            pipeline_timings=pipeline_timings,
-            rag_timings=rag_timings,
-        )
+        for k in pipeline_totals:
+            pipeline_totals[k] += pipeline_timings.get(k, 0)
+
+        for k in rag_totals:
+            rag_totals[k] += rag_timings.get(k, 0)
+
+        # 7. Conditional processing logic for Ground Truth sources tracking
+        expected_source = test.get("expected_source")
+        if expected_source:
+            retrieval_total += 1
+            if expected_source in retrieved_sources:
+                retrieval_correct += 1
+
+        # 3. Enhanced result log tracking structures with metrics dependencies
+        results.append({
+            "question": test["question"],
+            "latency": latency,
+            "predicted": predicted,
+            "expected": test["expected_urgency"],
+            "confidence": confidence,
+            "source": source,
+        })
+
+        if source in source_distribution:
+            source_distribution[source] += 1
+
+        # 8. Defensive EvaluationMetrics method execution fallback check
+        try:
+            metrics.add_result(
+                expected=test["expected_urgency"],
+                predicted=predicted,
+                latency=latency,
+                source=source,
+                confidence=confidence,
+                json_ok=json_ok,
+                pipeline_timings=pipeline_timings,
+                rag_timings=rag_timings,
+                retrieved_sources=retrieved_sources,
+            )
+        except TypeError:
+            # Fallback signature processing if current module rejects source keywords tracking parameters
+            metrics.add_result(
+                expected=test["expected_urgency"],
+                predicted=predicted,
+                latency=latency,
+                source=source,
+                confidence=confidence,
+                json_ok=json_ok,
+                pipeline_timings=pipeline_timings,
+                rag_timings=rag_timings,
+            )
 
         match = "✓" if predicted == test["expected_urgency"] else "✗"
         print(
@@ -262,8 +337,92 @@ def main():
             f" | {latency:.2f}s"
         )
 
-    # Generate report
     report = metrics.report()
+
+    # 4. Extract raw baseline metrics configurations
+    if metrics.confidences:
+        report["avg_confidence"] = round(
+            sum(metrics.confidences) / len(metrics.confidences),
+            3
+        )
+        report["max_confidence"] = round(
+            max(metrics.confidences),
+            3
+        )
+        report["min_confidence"] = round(
+            min(metrics.confidences),
+            3
+        )
+
+    count = len(tests)
+    
+    # 7. Conditionally assign retrieval metric data elements
+    if retrieval_total > 0:
+        report["retrieval_accuracy"] = round(
+            retrieval_correct / retrieval_total * 100,
+            2
+        )
+
+    # 2. Assign restructured components arrays definitions
+    report["rewrite_latency"] = round(pipeline_totals["rewrite"] / count, 3)
+    report["rag_latency"] = round(pipeline_totals["rag"] / count, 3)
+    report["llm_latency"] = round(pipeline_totals["llm"] / count, 3)
+    report["json_parse_latency"] = round(pipeline_totals["json_parse"] / count, 3)
+    report["safety_check_latency"] = round(pipeline_totals["safety_check"] / count, 3)
+    report["output_safety_latency"] = round(pipeline_totals["output_safety"] / count, 3)
+    report["web_fallback_latency"] = round(pipeline_totals["web_fallback"] / count, 3)
+    report["pipeline_total_latency"] = round(pipeline_totals["total"] / count, 3)
+
+    # 6. Latency Percentiles block processing
+    latencies = sorted(metrics.latencies)
+    if latencies:
+        report["median_latency"] = round(
+            latencies[len(latencies)//2],
+            3
+        )
+        report["p95_latency"] = round(
+            latencies[int(len(latencies)*0.95)-1],
+            3
+        )
+        report["p99_latency"] = round(
+            latencies[int(len(latencies)*0.99)-1],
+            3
+        )
+
+    report["embedding_latency"] = round(rag_totals["embedding"] / count, 3)
+    report["dense_latency"] = round(rag_totals["dense"] / count, 3)
+    report["bm25_latency"] = round(rag_totals["bm25"] / count, 3)
+    report["rrf_latency"] = round(rag_totals["rrf"] / count, 3)
+    report["parent_latency"] = round(rag_totals["parent"] / count, 3)
+    report["reranker_latency"] = round(rag_totals["reranker"] / count, 3)
+    report["retrieval_total_latency"] = round(rag_totals["total"] / count, 3)
+
+    # 5. RAG sub-component retrieval hit metrics processing definitions
+    report["avg_dense_hits"] = round(
+        sum(getattr(metrics, "dense_hits", [])) / count,
+        2
+    ) if getattr(metrics, "dense_hits", []) else 0
+
+    report["avg_bm25_hits"] = round(
+        sum(getattr(metrics, "bm25_hits", [])) / count,
+        2
+    ) if getattr(metrics, "bm25_hits", []) else 0
+
+    report["avg_parent_hits"] = round(
+        sum(getattr(metrics, "parent_hits", [])) / count,
+        2
+    ) if getattr(metrics, "parent_hits", []) else 0
+
+    report["avg_retrieved_chunks"] = round(
+        sum(getattr(metrics, "retrieved_chunks", [])) / count,
+        2
+    ) if getattr(metrics, "retrieved_chunks", []) else 0
+
+    if results:
+        fastest = min(results, key=lambda x: x["latency"])
+        slowest = max(results, key=lambda x: x["latency"])
+        report["fastest_query"] = fastest["question"]
+        report["slowest_query"] = slowest["question"]
 
     print()
     print("=" * 70)
@@ -271,15 +430,21 @@ def main():
     print("=" * 70)
     print()
 
+    print(f"  Correct                     : {metrics.correct}")
+    print(f"  Wrong                       : {metrics.total - metrics.correct}")
+
     for k, v in report.items():
         print(f"  {k:28}: {v}")
 
-    # Save report.json
+    print("\n  Response Source Distribution:")
+    for src_name, src_count in source_distribution.items():
+        print(f"    {src_name:26}: {src_count}")
+        report[f"source_{src_name}_count"] = src_count
+
     with open(REPORT_FILE, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=4)
     print(f"\n  Saved {REPORT_FILE}")
 
-    # Confusion matrix
     confusion_data = build_confusion_matrix(metrics.pairs)
     print()
     print("  Confusion Matrix:")
@@ -287,7 +452,6 @@ def main():
     for line in confusion_data["formatted"].split("\n"):
         print(f"    {line}")
 
-    # Generate charts
     chart_paths = {}
     if HAS_CHARTS:
         print("\n  Generating charts...")
@@ -301,7 +465,6 @@ def main():
         for name, path in chart_paths.items():
             print(f"    Saved {name}: {path}")
 
-    # Generate HTML report
     generate_report_html(report, confusion_data, chart_paths)
 
     print()

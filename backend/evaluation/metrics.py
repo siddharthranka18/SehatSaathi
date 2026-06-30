@@ -1,37 +1,46 @@
 """
-Evaluation Metrics Module
+Evaluation Metrics Collector for SehatSaathi
 
-Provides functions for accuracy, precision, recall, F1,
-latency, confidence, and source usage stats.
+Accumulates model evaluation results across accuracy categories, latencies, 
+confidence trends, and granular retrieval framework statistics.
 """
 
-from statistics import mean
 from collections import defaultdict
-
-
-LABELS = ["home_care", "visit_phc", "critical"]
+from statistics import mean
 
 
 class EvaluationMetrics:
-
     def __init__(self):
-        self.total = 0
-        self.correct = 0
-        self.rag_used = 0
-        self.web_used = 0
+        self.pairs = []
         self.latencies = []
         self.confidences = []
-        self.json_success = 0
-        self.json_failed = 0
-        self.pairs = []  # (expected, predicted)
+        
+        self.correct = 0
+        self.total = 0
+        
+        self.rag_used = 0
+        self.web_used = 0
+        
+        self.total_times = []
 
-        # Timing breakdowns
-        self.embedding_times = []
-        self.reranker_times = []
-        self.llm_times = []
-        self.retrieval_times = []  # rag total
-        self.total_times = []     # pipeline total
+        # 1. Advanced Evaluation Metric Containers Setup
+        # Retrieval statistics
+        self.dense_hits = []
+        self.bm25_hits = []
+        self.parent_hits = []
+        self.retrieved_chunks = []
 
+        # Conversation statistics
+        self.turn_counts = []
+
+        # Confidence statistics
+        self.rag_confidence_count = 0
+        self.web_fallback_count = 0
+
+        # Sources used
+        self.guideline_sources = defaultdict(int)
+
+    # 2. Synchronized add_result signature matching evaluate.py parameters
     def add_result(
         self,
         expected,
@@ -42,116 +51,87 @@ class EvaluationMetrics:
         json_ok=True,
         pipeline_timings=None,
         rag_timings=None,
+        dense_hits=0,
+        bm25_hits=0,
+        parent_hits=0,
+        retrieved_chunks=0,
+        retrieved_sources=None,
+        rag_confident=False,
+        conversation_turns=0,
     ):
         self.total += 1
         if expected == predicted:
             self.correct += 1
-
-        self.latencies.append(latency)
-        self.confidences.append(confidence)
-        self.pairs.append((expected, predicted))
-
+            
         if source == "medical_guideline_rag":
             self.rag_used += 1
         elif source == "web_fallback":
             self.web_used += 1
 
-        if json_ok:
-            self.json_success += 1
+        self.pairs.append((expected, predicted))
+        self.latencies.append(latency)
+        self.confidences.append(confidence)
+
+        # 3. Dynamic Telemetry Metric Append Matrix
+        self.dense_hits.append(dense_hits)
+        self.bm25_hits.append(bm25_hits)
+        self.parent_hits.append(parent_hits)
+        self.retrieved_chunks.append(retrieved_chunks)
+
+        self.turn_counts.append(conversation_turns)
+
+        if rag_confident:
+            self.rag_confidence_count += 1
         else:
-            self.json_failed += 1
+            self.web_fallback_count += 1
 
-        # Collect timing breakdowns
-        if rag_timings:
-            self.embedding_times.append(rag_timings.get("embedding", 0))
-            self.reranker_times.append(rag_timings.get("reranker", 0))
-        if pipeline_timings:
-            self.llm_times.append(pipeline_timings.get("llm", 0))
-            self.retrieval_times.append(pipeline_timings.get("rag", 0))
-            self.total_times.append(pipeline_timings.get("total", 0))
-
-    # ---- Core metric functions ----
-
-    def accuracy(self):
-        if self.total == 0:
-            return 0.0
-        return round(self.correct / self.total * 100, 2)
-
-    def precision(self):
-        """Macro-averaged precision across all labels."""
-        precisions = []
-        for label in LABELS:
-            tp = sum(1 for e, p in self.pairs if p == label and e == label)
-            fp = sum(1 for e, p in self.pairs if p == label and e != label)
-            if tp + fp > 0:
-                precisions.append(tp / (tp + fp))
-        if not precisions:
-            return 0.0
-        return round(mean(precisions) * 100, 2)
-
-    def recall(self):
-        """Macro-averaged recall across all labels."""
-        recalls = []
-        for label in LABELS:
-            tp = sum(1 for e, p in self.pairs if e == label and p == label)
-            fn = sum(1 for e, p in self.pairs if e == label and p != label)
-            if tp + fn > 0:
-                recalls.append(tp / (tp + fn))
-        if not recalls:
-            return 0.0
-        return round(mean(recalls) * 100, 2)
-
-    def f1(self):
-        """Macro-averaged F1 score."""
-        p = self.precision()
-        r = self.recall()
-        if p + r == 0:
-            return 0.0
-        return round(2 * p * r / (p + r), 2)
+        if retrieved_sources:
+            for src in retrieved_sources:
+                self.guideline_sources[src] += 1
 
     def average_latency(self):
-        return round(mean(self.latencies), 3) if self.latencies else 0.0
+        return round(mean(self.latencies), 3) if self.latencies else 0
 
-    def average_confidence(self):
-        return round(mean(self.confidences), 3) if self.confidences else 0.0
+    # 4. Math calculation modules for processing RAG execution matrices
+    def average_dense_hits(self):
+        return round(mean(self.dense_hits), 2) if self.dense_hits else 0
 
-    def rag_usage(self):
-        return self.rag_used
+    def average_bm25_hits(self):
+        return round(mean(self.bm25_hits), 2) if self.bm25_hits else 0
 
-    def web_usage(self):
-        return self.web_used
+    def average_parent_hits(self):
+        return round(mean(self.parent_hits), 2) if self.parent_hits else 0
 
-    def average_embedding_time(self):
-        return round(mean(self.embedding_times), 4) if self.embedding_times else 0.0
+    def average_chunks(self):
+        return round(mean(self.retrieved_chunks), 2) if self.retrieved_chunks else 0
 
-    def average_reranking_time(self):
-        return round(mean(self.reranker_times), 4) if self.reranker_times else 0.0
-
-    def average_llm_time(self):
-        return round(mean(self.llm_times), 4) if self.llm_times else 0.0
-
-    def average_retrieval_time(self):
-        return round(mean(self.retrieval_times), 4) if self.retrieval_times else 0.0
-
-    def average_total_time(self):
-        return round(mean(self.total_times), 4) if self.total_times else 0.0
+    def average_turns(self):
+        return round(mean(self.turn_counts), 2) if self.turn_counts else 0
 
     def report(self):
-        return {
-            "questions": self.total,
-            "accuracy": self.accuracy(),
-            "precision": self.precision(),
-            "recall": self.recall(),
-            "f1": self.f1(),
-            "rag_usage": self.rag_usage(),
-            "web_usage": self.web_usage(),
-            "average_latency": self.average_latency(),
-            "average_confidence": self.average_confidence(),
-            "average_embedding_time": self.average_embedding_time(),
-            "average_reranking_time": self.average_reranking_time(),
-            "average_llm_time": self.average_llm_time(),
-            "average_retrieval_time": self.average_retrieval_time(),
-            "average_total_time": self.average_total_time(),
-            "json_success": self.json_success,
-            "json_failed": self.json_failed,
+        accuracy = round((self.correct / self.total) * 100, 2) if self.total else 0
+        
+        # Base classification performance matrix tracking configuration
+        base_report = {
+            "accuracy": accuracy,
+            "total_cases": self.total,
+            "rag_cases": self.rag_used,
+            "web_cases": self.web_used,
+            "mean_latency_seconds": self.average_latency(),
         }
+
+        # 5. Injection of comprehensive operational evaluation elements
+        base_report.update({
+            "average_dense_hits": self.average_dense_hits(),
+            "average_bm25_hits": self.average_bm25_hits(),
+            "average_parent_hits": self.average_parent_hits(),
+            "average_retrieved_chunks": self.average_chunks(),
+            "average_conversation_turns": self.average_turns(),
+            
+            "rag_confident_cases": self.rag_confidence_count,
+            "web_fallback_cases": self.web_fallback_count,
+            
+            "guideline_usage": dict(self.guideline_sources),
+        })
+
+        return base_report
