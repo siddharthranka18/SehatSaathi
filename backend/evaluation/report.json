@@ -1,0 +1,10 @@
+{
+    "questions": 10,
+    "accuracy": 60.0,
+    "rag_usage": 2,
+    "web_usage": 6,
+    "average_latency": 7.348,
+    "average_confidence": 0,
+    "json_success": 10,
+    "json_failed": 0
+}

@@ -1,0 +1,537 @@
+[
+    {
+        "question": "Fever",
+        "expected_urgency": "home_care",
+        "expected_source": "fever.txt"
+    },
+    {
+        "question": "High fever for five days",
+        "expected_urgency": "visit_phc",
+        "expected_source": "fever.txt"
+    },
+    {
+        "question": "Chest pain with difficulty breathing",
+        "expected_urgency": "critical",
+        "expected_source": "heart.txt"
+    },
+    {
+        "question": "Small headache after studying",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Vomiting continuously for three days",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Severe bleeding after accident",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Mild stomach pain after eating spicy food",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Fever with unconsciousness",
+        "expected_urgency": "critical",
+        "expected_source": "fever.txt"
+    },
+    {
+        "question": "Loose motion for one day",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Persistent cough for two weeks",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Mild cold and runny nose",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Sore throat since yesterday",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Minor paper cut on finger",
+        "expected_urgency": "home_care",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Slight body ache after exercise",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Occasional sneezing in the morning",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Mild acidity after meal",
+        "expected_urgency": "home_care",
+        "expected_source": "ayush.txt"
+    },
+    {
+        "question": "Small mosquito bite with itching",
+        "expected_urgency": "home_care",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Feeling tired after a long day",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Dry skin on hands in winter",
+        "expected_urgency": "home_care",
+        "expected_source": "ayush.txt"
+    },
+    {
+        "question": "Mild gas and bloating",
+        "expected_urgency": "home_care",
+        "expected_source": "ayush.txt"
+    },
+    {
+        "question": "Watery eyes from dust",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Light sunburn on arms",
+        "expected_urgency": "home_care",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Hiccups that won't stop for an hour",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Slight nausea after car ride",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Minor bruise on knee from fall",
+        "expected_urgency": "home_care",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Stiff neck from sleeping wrong",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Mild constipation for two days",
+        "expected_urgency": "home_care",
+        "expected_source": "ayush.txt"
+    },
+    {
+        "question": "Common cold with sneezing and mild headache",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Slight muscle cramp in calf",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Eye strain from too much screen time",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Low grade fever of 99°F since morning",
+        "expected_urgency": "home_care",
+        "expected_source": "fever.txt"
+    },
+    {
+        "question": "Small blister on foot from new shoes",
+        "expected_urgency": "home_care",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Mild dandruff on scalp",
+        "expected_urgency": "home_care",
+        "expected_source": "ayush.txt"
+    },
+    {
+        "question": "Chapped lips in cold weather",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Ear pain during flight landing",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Fever above 102°F for three days",
+        "expected_urgency": "visit_phc",
+        "expected_source": "fever.txt"
+    },
+    {
+        "question": "Rash spreading across body for two days",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Ear pain with discharge",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Persistent diarrhea for four days",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Child not eating for two days and lethargic",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Joint pain and swelling in knee for a week",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Abdominal pain recurring every few hours for two days",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Red swollen wound that is warm to touch",
+        "expected_urgency": "visit_phc",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Painful urination for three days",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Wheezing and shortness of breath after walking upstairs",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Persistent lower back pain for over a week",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Recurring headaches every day for a week",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "High blood pressure reading at home",
+        "expected_urgency": "visit_phc",
+        "expected_source": "heart.txt"
+    },
+    {
+        "question": "Weight loss without reason over past month",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Night sweats for a week",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Chronic acidity not responding to antacids",
+        "expected_urgency": "visit_phc",
+        "expected_source": "ayush.txt"
+    },
+    {
+        "question": "Irregular heartbeat noticed occasionally",
+        "expected_urgency": "visit_phc",
+        "expected_source": "heart.txt"
+    },
+    {
+        "question": "Swollen lymph nodes in neck for over a week",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Dry cough and mild fever for one week",
+        "expected_urgency": "visit_phc",
+        "expected_source": "fever.txt"
+    },
+    {
+        "question": "Toothache that wakes me up at night",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Bleeding gums when brushing teeth daily",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Ankle sprain with significant swelling",
+        "expected_urgency": "visit_phc",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Dizziness every time I stand up for past week",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Skin infection with pus not healing",
+        "expected_urgency": "visit_phc",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Child having croup-like cough at night",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Burning sensation in stomach after every meal for two weeks",
+        "expected_urgency": "visit_phc",
+        "expected_source": "ayush.txt"
+    },
+    {
+        "question": "Blood in stool one time",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Eye redness and discharge for three days",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Nosebleed happening frequently",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Numbness and tingling in fingers",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Swollen feet in the evening for past week",
+        "expected_urgency": "visit_phc",
+        "expected_source": "heart.txt"
+    },
+    {
+        "question": "Sudden severe chest pain radiating to left arm",
+        "expected_urgency": "critical",
+        "expected_source": "heart.txt"
+    },
+    {
+        "question": "Person collapsed and not responding",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Severe allergic reaction with throat swelling",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Uncontrolled heavy bleeding from deep cut",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Sudden one-sided weakness and speech difficulty",
+        "expected_urgency": "critical",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Seizure lasting more than five minutes",
+        "expected_urgency": "critical",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Infant with high fever of 104°F and not feeding",
+        "expected_urgency": "critical",
+        "expected_source": "fever.txt"
+    },
+    {
+        "question": "Severe difficulty breathing cannot speak full sentences",
+        "expected_urgency": "critical",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Snake bite on leg twenty minutes ago",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Person drowning rescued and coughing up water",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Severe burn covering large area of body",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Child drank cleaning solution accidentally",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Sudden vision loss in one eye",
+        "expected_urgency": "critical",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Crushing chest pressure with sweating and nausea",
+        "expected_urgency": "critical",
+        "expected_source": "heart.txt"
+    },
+    {
+        "question": "Electric shock and person is unresponsive",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Head injury with confusion and vomiting",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Spinal injury after fall from height unable to move legs",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Severe abdominal pain with rigid stomach",
+        "expected_urgency": "critical",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Diabetic patient unresponsive with low sugar",
+        "expected_urgency": "critical",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Choking and cannot breathe or cough",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Baby is blue and gasping for air",
+        "expected_urgency": "critical",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Pregnant woman with heavy bleeding",
+        "expected_urgency": "critical",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Sudden swelling of face and lips after eating peanuts",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Person stabbed in abdomen",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Fever with stiff neck and sensitivity to light",
+        "expected_urgency": "critical",
+        "expected_source": "fever.txt"
+    },
+    {
+        "question": "Herbal tea for better digestion",
+        "expected_urgency": "home_care",
+        "expected_source": "ayush.txt"
+    },
+    {
+        "question": "Turmeric milk for mild joint pain",
+        "expected_urgency": "home_care",
+        "expected_source": "ayush.txt"
+    },
+    {
+        "question": "Steam inhalation for nasal congestion",
+        "expected_urgency": "home_care",
+        "expected_source": "ayush.txt"
+    },
+    {
+        "question": "Yoga exercises for mild stress relief",
+        "expected_urgency": "home_care",
+        "expected_source": "ayush.txt"
+    },
+    {
+        "question": "Chest tightness with palpitations at rest for two days",
+        "expected_urgency": "visit_phc",
+        "expected_source": "heart.txt"
+    },
+    {
+        "question": "Heart racing without physical activity",
+        "expected_urgency": "visit_phc",
+        "expected_source": "heart.txt"
+    },
+    {
+        "question": "Mild fever that comes and goes for a week",
+        "expected_urgency": "visit_phc",
+        "expected_source": "fever.txt"
+    },
+    {
+        "question": "Child with fever and rash",
+        "expected_urgency": "visit_phc",
+        "expected_source": "fever.txt"
+    },
+    {
+        "question": "Minor first degree burn on hand from stove",
+        "expected_urgency": "home_care",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Small cut on finger while cooking",
+        "expected_urgency": "home_care",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Deep wound with visible bone",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Car accident victim with multiple injuries",
+        "expected_urgency": "critical",
+        "expected_source": "first_aid.txt"
+    },
+    {
+        "question": "Mild seasonal allergy sneezing",
+        "expected_urgency": "home_care",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Breathing difficulty and blue lips in child",
+        "expected_urgency": "critical",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Fainting spell that lasted few seconds",
+        "expected_urgency": "visit_phc",
+        "expected_source": "who_triage.txt"
+    },
+    {
+        "question": "Honey and ginger for sore throat",
+        "expected_urgency": "home_care",
+        "expected_source": "ayush.txt"
+    }
+]

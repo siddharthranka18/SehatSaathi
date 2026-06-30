@@ -18,3 +18,10 @@ class TriageResponse(BaseModel):
     is_final: bool = False
     source: Optional[str] = None
     sources: Optional[List[str]] = None
+    confidence: float = 0.0
+    retrieved_sources: list[str] = []
+    pipeline_timings: dict = {}
+    rag_timings: dict = {}
+    dense_hits: int = 0
+    bm25_hits: int = 0
+    retrieved_chunks: int = 0

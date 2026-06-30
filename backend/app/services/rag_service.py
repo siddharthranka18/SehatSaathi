@@ -511,159 +511,122 @@ def rrf(results):
 # =============================
 
 
-def retrieve_context(query,top_k=3):
+def retrieve_context(query, top_k=3):
 
+    import time
+
+    timings = {}
+    total_start = time.perf_counter()
 
     load_index()
 
-
-
-    vector=get_embedding_model().encode(
-
+    # --- Embedding ---
+    t0 = time.perf_counter()
+    vector = get_embedding_model().encode(
         query,
-
         normalize_embeddings=True
-
     )
+    timings["embedding"] = round(time.perf_counter() - t0, 4)
 
-
-    dense=get_qdrant().query_points(
-
+    # --- Dense retrieval ---
+    t0 = time.perf_counter()
+    dense = get_qdrant().query_points(
         collection_name=COLLECTION_NAME,
-
         query=vector.tolist(),
-
         limit=10
-
     )
-
-
-    dense_results=[
-
+    dense_results = [
         p.payload["text"]
-
         for p in dense.points
-
     ]
+    timings["dense"] = round(time.perf_counter() - t0, 4)
 
-
-
-    bm25_scores=_bm25.get_scores(
-
+    # --- BM25 retrieval ---
+    t0 = time.perf_counter()
+    bm25_scores = _bm25.get_scores(
         query.lower().split()
-
     )
-
-
-    sparse=[
-
+    sparse = [
         chunks[i]["text"]
-
         for i in np.argsort(bm25_scores)[::-1][:10]
-
     ]
+    timings["bm25"] = round(time.perf_counter() - t0, 4)
 
+    # --- RRF ---
+    t0 = time.perf_counter()
+    fused = rrf([dense_results, sparse])
+    timings["rrf"] = round(time.perf_counter() - t0, 4)
 
-
-    fused=rrf(
-
-        [
-            dense_results,
-            sparse
-        ]
-
-    )
-
-
-    parents=[]
-
+    # --- Parent retrieval ---
+    t0 = time.perf_counter()
+    parents = []
+    retrieved_sources_set = set()
 
     for text in fused:
-
-
-        c=chunk_lookup.get(text)
-
-
+        c = chunk_lookup.get(text)
         if c:
-
             parents.append(
-
-                parent_docs[
-                    c["parent_id"]
-                ]["text"]
-
+                parent_docs[c["parent_id"]]["text"]
             )
+            retrieved_sources_set.add(c.get("source", ""))
 
+    parents = list(set(parents))
+    timings["parent"] = round(time.perf_counter() - t0, 4)
 
-    parents=list(set(parents))
-
-
+    retrieved_sources = sorted(
+        [s for s in retrieved_sources_set if s]
+    )
 
     if not parents:
-
+        timings["reranker"] = 0.0
+        timings["total"] = round(
+            time.perf_counter() - total_start, 4
+        )
         return {
-
-            "chunks":[],
-
-            "top_score":0,
-
-            "confident":False
-
+            "chunks": [],
+            "top_score": 0,
+            "confident": False,
+            "retrieved_sources": [],
+            "dense_hits": len(dense_results),
+            "bm25_hits": len(sparse),
+            "parent_hits": 0,
+            "retrieved_chunks": 0,
+            "timings": timings,
         }
 
-
-
-    scores=get_reranker().predict(
-
-        [
-            (query,p)
-
-            for p in parents
-        ]
-
+    # --- Cross-encoder reranking ---
+    t0 = time.perf_counter()
+    scores = get_reranker().predict(
+        [(query, p) for p in parents]
     )
 
-
-
-    ranked=sorted(
-
-        zip(
-            parents,
-            scores
-        ),
-
-        key=lambda x:x[1],
-
+    ranked = sorted(
+        zip(parents, scores),
+        key=lambda x: x[1],
         reverse=True
+    )
+    timings["reranker"] = round(time.perf_counter() - t0, 4)
 
+    timings["total"] = round(
+        time.perf_counter() - total_start, 4
     )
 
+    top_score = float(ranked[0][1])
 
-    top_score=float(ranked[0][1])
-
-
-    print(
-        "RAG SCORE:",
-        top_score
-    )
-
+    print("RAG SCORE:", top_score)
 
     return {
-
-        "chunks":[
-
-            x[0]
-
-            for x in ranked[:top_k]
-
+        "chunks": [
+            x[0] for x in ranked[:top_k]
         ],
-
-        "top_score":top_score,
-
-        "confident":
-
-            top_score > CONFIDENCE_THRESHOLD
-
+        "top_score": top_score,
+        "confident": top_score > CONFIDENCE_THRESHOLD,
+        "retrieved_sources": retrieved_sources,
+        "dense_hits": len(dense_results),
+        "bm25_hits": len(sparse),
+        "parent_hits": len(parents),
+        "retrieved_chunks": len(ranked[:top_k]),
+        "timings": timings,
     }
 
 

@@ -1,6 +1,7 @@
 import os
 import json
 import re
+import time
 from pathlib import Path
 from dotenv import load_dotenv
 from groq import Groq
@@ -93,33 +94,48 @@ def parse_llm_json(raw):
 
 def run_triage(request: TriageRequest) -> TriageResponse:
 
+    pipeline_timings = {}
+    total_start = time.perf_counter()
+
     full_text = " ".join([m.content for m in request.conversation])
 
     # 1. SAFETY CHECK
+    t0 = time.perf_counter()
     safety = check_red_flags(full_text)
+    pipeline_timings["safety_check"] = round(time.perf_counter() - t0, 4)
+
     if safety["urgent"]:
+        pipeline_timings["total"] = round(time.perf_counter() - total_start, 4)
         return TriageResponse(
             reply=safety["message"],
             urgency="critical",
             is_final=True,
-            source="safety_override"
+            source="safety_override",
+            pipeline_timings=pipeline_timings,
         )
 
-    # 2. QUERY REWRITE — plain text mode, no json enforcement
+    # 2. QUERY REWRITE
+    t0 = time.perf_counter()
     rewritten_query = rewrite_query(chat_completion, full_text)
+    pipeline_timings["rewrite"] = round(time.perf_counter() - t0, 4)
     print("REWRITTEN QUERY:", rewritten_query)
 
     # 3. RAG RETRIEVAL
+    t0 = time.perf_counter()
     rag_result = retrieve_context(rewritten_query)
+    pipeline_timings["rag"] = round(time.perf_counter() - t0, 4)
+
     print("\n========== TRIAGE DEBUG ==========")
     print("RAG Source:", "medical_guideline_rag" if rag_result["confident"] else "web_fallback")
     print("Top Score:", rag_result["top_score"])
     print("==================================\n")
 
     # 4. CONTEXT SELECTION
+    t0 = time.perf_counter()
     if rag_result["confident"]:
         context = "\n\n".join(rag_result["chunks"])
         source = "medical_guideline_rag"
+        pipeline_timings["web_fallback"] = 0.0
     else:
         web_result = web_search_fallback(rewritten_query)
         context = f"""
@@ -131,6 +147,7 @@ Use this only if it does not contradict the provided medical reasoning.
 Clearly mention that this information is from web search and may not be clinically verified.
 """
         source = "web_fallback"
+        pipeline_timings["web_fallback"] = round(time.perf_counter() - t0, 4)
 
     # 5. BUILD LLM MESSAGES
     messages = [
@@ -151,30 +168,43 @@ Clearly mention that this information is from web search and may not be clinical
             "content": "You have asked enough questions. Return your FINAL triage decision now. Set is_final=true."
         })
 
-    # 7. LLM GENERATION — json mode
+    # 7. LLM GENERATION
+    t0 = time.perf_counter()
     raw = chat_completion_json(messages)
+    pipeline_timings["llm"] = round(time.perf_counter() - t0, 4)
     print("RAW LLM:", raw)
 
     # 8. JSON PARSE
+    t0 = time.perf_counter()
     try:
         parsed = parse_llm_json(raw)
+        pipeline_timings["json_parse"] = round(time.perf_counter() - t0, 4)
     except Exception as e:
+        pipeline_timings["json_parse"] = round(time.perf_counter() - t0, 4)
+        pipeline_timings["total"] = round(time.perf_counter() - total_start, 4)
         print("JSON ERROR:", e)
         return TriageResponse(
             reply="I could not understand properly. Please explain again.",
             urgency="unclear",
             is_final=False,
-            source="json_parse_error"
+            source="json_parse_error",
+            pipeline_timings=pipeline_timings,
         )
 
     # 9. OUTPUT SAFETY
+    t0 = time.perf_counter()
     safe = validate_ai_response(parsed.get("reply", ""))
+    pipeline_timings["output_safety"] = round(time.perf_counter() - t0, 4)
+
+    pipeline_timings["total"] = round(time.perf_counter() - total_start, 4)
+
     if not safe["safe"]:
         return TriageResponse(
             reply="Please consult a healthcare professional for proper guidance.",
             urgency="visit_phc",
             is_final=True,
-            source="output_guardrail"
+            source="output_guardrail",
+            pipeline_timings=pipeline_timings,
         )
 
     # FINAL RESPONSE
@@ -182,5 +212,12 @@ Clearly mention that this information is from web search and may not be clinical
         reply=parsed.get("reply", ""),
         urgency=parsed.get("urgency", "unclear"),
         is_final=parsed.get("is_final", False),
-        source=source
+        source=source,
+        confidence=rag_result["top_score"],
+        retrieved_sources=rag_result.get("retrieved_sources", []),
+        pipeline_timings=pipeline_timings,
+        rag_timings=rag_result.get("timings", {}),
+        dense_hits=rag_result.get("dense_hits", 0),
+        bm25_hits=rag_result.get("bm25_hits", 0),
+        retrieved_chunks=rag_result.get("retrieved_chunks", 0),
     )
