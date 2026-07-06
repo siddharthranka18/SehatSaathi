@@ -71,7 +71,10 @@ class EvaluationMetrics:
         self.pairs.append((expected, predicted))
         self.latencies.append(latency)
         self.confidences.append(confidence)
-
+        if pipeline_timings:
+            self.total_times.append(
+                pipeline_timings.get("total", 0)
+    )
         # 3. Dynamic Telemetry Metric Append Matrix
         self.dense_hits.append(dense_hits)
         self.bm25_hits.append(bm25_hits)

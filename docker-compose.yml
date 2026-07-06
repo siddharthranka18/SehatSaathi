@@ -12,9 +12,8 @@ services:
 
 
   backend:
-
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
 
     ports:

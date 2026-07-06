@@ -147,9 +147,15 @@ def run_triage(request: TriageRequest) -> TriageResponse:
 
     full_text = " ".join([m.content for m in request.conversation])
 
+    # Safety check runs only on USER messages — not assistant replies.
+    # Running on full_text (including AI responses) causes false positives:
+    # e.g. a previous AI reply mentioning "breathing difficulty" would flag
+    # the next completely unrelated user message as a breathing emergency.
+    user_text = " ".join([m.content for m in request.conversation if m.role == "user"])
+
     # 1. SAFETY CHECK
     t0 = time.perf_counter()
-    safety = check_red_flags(full_text)
+    safety = check_red_flags(user_text)
     pipeline_timings["safety_check"] = round(time.perf_counter() - t0, 4)
 
     if safety["urgent"]:
@@ -160,6 +166,15 @@ def run_triage(request: TriageRequest) -> TriageResponse:
             is_final=True,
             source="safety_override",
             pipeline_timings=pipeline_timings,
+            rewritten_query="",
+            rag_confident=False,
+            retrieval_method="Safety Override",
+            context_length=0,
+            parent_hits=0,
+            dense_scores=[],
+            reranker_scores=[],
+            retrieval_stats={},
+            conversation_turns=len(request.conversation),
         )
 
     # 2. QUERY REWRITE
@@ -183,9 +198,13 @@ def run_triage(request: TriageRequest) -> TriageResponse:
     if rag_result["confident"]:
         context = "\n\n".join(rag_result["chunks"])
         source = "medical_guideline_rag"
+        # Respect the retrieval_method set by rag_service (e.g. "BM25 Only (FAST_DEV=1)")
+        # so evaluation reports and API responses are always honest about the pipeline used.
+        retrieval_method = rag_result.get("retrieval_method", "Hybrid RAG")
         pipeline_timings["web_fallback"] = 0.0
     else:
         web_result = web_search_fallback(rewritten_query)
+
         context = f"""
 UNVERIFIED WEB INFORMATION
 
@@ -194,8 +213,17 @@ UNVERIFIED WEB INFORMATION
 Use this only if it does not contradict the provided medical reasoning.
 Clearly mention that this information is from web search and may not be clinically verified.
 """
+
         source = "web_fallback"
-        pipeline_timings["web_fallback"] = round(time.perf_counter() - t0, 4)
+        retrieval_method = "Web Fallback"
+
+        pipeline_timings["web_fallback"] = round(
+            time.perf_counter() - t0,
+            4
+        )
+
+    context_length = len(context)
+    conversation_turns = len(request.conversation)
 
     # 5. BUILD LLM MESSAGES
     messages = [
@@ -237,6 +265,15 @@ Clearly mention that this information is from web search and may not be clinical
             is_final=False,
             source="json_parse_error",
             pipeline_timings=pipeline_timings,
+            rewritten_query=rewritten_query,
+            rag_confident=rag_result.get("confident", False),
+            retrieval_method=retrieval_method,
+            context_length=context_length,
+            parent_hits=rag_result.get("parent_hits", 0),
+            dense_scores=rag_result.get("dense_scores", []),
+            reranker_scores=rag_result.get("reranker_scores", []),
+            retrieval_stats=rag_result.get("retrieval_stats", {}),
+            conversation_turns=conversation_turns,
         )
 
     # 9. OUTPUT SAFETY
@@ -253,6 +290,15 @@ Clearly mention that this information is from web search and may not be clinical
             is_final=True,
             source="output_guardrail",
             pipeline_timings=pipeline_timings,
+            rewritten_query=rewritten_query,
+            rag_confident=rag_result.get("confident", False),
+            retrieval_method=retrieval_method,
+            context_length=context_length,
+            parent_hits=rag_result.get("parent_hits", 0),
+            dense_scores=rag_result.get("dense_scores", []),
+            reranker_scores=rag_result.get("reranker_scores", []),
+            retrieval_stats=rag_result.get("retrieval_stats", {}),
+            conversation_turns=conversation_turns,
         )
 
     # FINAL RESPONSE
@@ -261,11 +307,20 @@ Clearly mention that this information is from web search and may not be clinical
         urgency=parsed.get("urgency", "unclear"),
         is_final=parsed.get("is_final", False),
         source=source,
-        confidence=rag_result["top_score"],
+        confidence=rag_result.get("top_score", 0),
         retrieved_sources=rag_result.get("retrieved_sources", []),
         pipeline_timings=pipeline_timings,
         rag_timings=rag_result.get("timings", {}),
         dense_hits=rag_result.get("dense_hits", 0),
         bm25_hits=rag_result.get("bm25_hits", 0),
+        parent_hits=rag_result.get("parent_hits", 0),
         retrieved_chunks=rag_result.get("retrieved_chunks", 0),
+        rewritten_query=rewritten_query,
+        rag_confident=rag_result.get("confident", False),
+        retrieval_method=retrieval_method,
+        context_length=context_length,
+        dense_scores=rag_result.get("dense_scores", []),
+        reranker_scores=rag_result.get("reranker_scores", []),
+        retrieval_stats=rag_result.get("retrieval_stats", {}),
+        conversation_turns=conversation_turns,
     )

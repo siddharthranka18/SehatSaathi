@@ -3,7 +3,7 @@ torch==2.4.0
 transformers==4.44.2
 sentence-transformers==3.0.1
 fastapi
-uvicorn[standard]
+uvicorn
 python-dotenv
 groq
 httpx

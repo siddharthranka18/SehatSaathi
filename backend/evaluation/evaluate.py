@@ -194,7 +194,6 @@ def generate_report_html(report, confusion_data, chart_paths):
 def main():
     metrics = EvaluationMetrics()
 
-    # 1. Aligned pipeline total tracking dictionary keys
     pipeline_totals = {
         "rewrite": 0,
         "rag": 0,
@@ -234,7 +233,7 @@ def main():
 
     print()
     print("=" * 70)
-    print(f"  Running SehatSaathi Evaluation — {len(tests)} test cases")
+    print(f" Running SehatSaathi Evaluation — {len(tests)} test cases")
     print("=" * 70)
     print()
     print(f"{'Question':40} | {'Predicted':12} | {'Expected':12} | {'Time':>6}")
@@ -254,21 +253,34 @@ def main():
 
         try:
             response = requests.post(API, json=payload, timeout=60)
+            print(response.status_code)
+            print(response.text)
             latency = time.perf_counter() - start
             json_ok = response.status_code == 200
         except Exception as e:
             latency = time.perf_counter() - start
             json_ok = False
-            print(f"  ERROR: {e}")
+            print(f" ERROR: {e}")
 
         if json_ok:
             result = response.json()
+
             predicted = result.get("urgency", "ERROR")
             source = result.get("source", "")
             confidence = result.get("confidence", 0)
+
             pipeline_timings = result.get("pipeline_timings", {})
             rag_timings = result.get("rag_timings", {})
+
             retrieved_sources = result.get("retrieved_sources", [])
+
+            dense_hits = result.get("dense_hits", 0)
+            bm25_hits = result.get("bm25_hits", 0)
+            parent_hits = result.get("parent_hits", 0)
+            retrieved_chunks = result.get("retrieved_chunks", 0)
+
+            rag_confident = result.get("rag_confident", False)
+            conversation_turns = result.get("conversation_turns", 0)
         else:
             predicted = "ERROR"
             source = "ERROR"
@@ -276,6 +288,12 @@ def main():
             pipeline_timings = {}
             rag_timings = {}
             retrieved_sources = []
+            dense_hits = 0
+            bm25_hits = 0
+            parent_hits = 0
+            retrieved_chunks = 0
+            rag_confident = False
+            conversation_turns = 0
 
         for k in pipeline_totals:
             pipeline_totals[k] += pipeline_timings.get(k, 0)
@@ -283,14 +301,12 @@ def main():
         for k in rag_totals:
             rag_totals[k] += rag_timings.get(k, 0)
 
-        # 7. Conditional processing logic for Ground Truth sources tracking
         expected_source = test.get("expected_source")
         if expected_source:
             retrieval_total += 1
             if expected_source in retrieved_sources:
                 retrieval_correct += 1
 
-        # 3. Enhanced result log tracking structures with metrics dependencies
         results.append({
             "question": test["question"],
             "latency": latency,
@@ -303,31 +319,24 @@ def main():
         if source in source_distribution:
             source_distribution[source] += 1
 
-        # 8. Defensive EvaluationMetrics method execution fallback check
-        try:
-            metrics.add_result(
-                expected=test["expected_urgency"],
-                predicted=predicted,
-                latency=latency,
-                source=source,
-                confidence=confidence,
-                json_ok=json_ok,
-                pipeline_timings=pipeline_timings,
-                rag_timings=rag_timings,
-                retrieved_sources=retrieved_sources,
-            )
-        except TypeError:
-            # Fallback signature processing if current module rejects source keywords tracking parameters
-            metrics.add_result(
-                expected=test["expected_urgency"],
-                predicted=predicted,
-                latency=latency,
-                source=source,
-                confidence=confidence,
-                json_ok=json_ok,
-                pipeline_timings=pipeline_timings,
-                rag_timings=rag_timings,
-            )
+        # Direct metrics log execution using pre-extracted variables
+        metrics.add_result(
+            expected=test["expected_urgency"],
+            predicted=predicted,
+            latency=latency,
+            source=source,
+            confidence=confidence,
+            json_ok=json_ok,
+            pipeline_timings=pipeline_timings,
+            rag_timings=rag_timings,
+            dense_hits=dense_hits,
+            bm25_hits=bm25_hits,
+            parent_hits=parent_hits,
+            retrieved_chunks=retrieved_chunks,
+            retrieved_sources=retrieved_sources,
+            rag_confident=rag_confident,
+            conversation_turns=conversation_turns,
+        )
 
         match = "✓" if predicted == test["expected_urgency"] else "✗"
         print(
@@ -339,7 +348,6 @@ def main():
 
     report = metrics.report()
 
-    # 4. Extract raw baseline metrics configurations
     if metrics.confidences:
         report["avg_confidence"] = round(
             sum(metrics.confidences) / len(metrics.confidences),
@@ -356,14 +364,12 @@ def main():
 
     count = len(tests)
     
-    # 7. Conditionally assign retrieval metric data elements
     if retrieval_total > 0:
         report["retrieval_accuracy"] = round(
             retrieval_correct / retrieval_total * 100,
             2
         )
 
-    # 2. Assign restructured components arrays definitions
     report["rewrite_latency"] = round(pipeline_totals["rewrite"] / count, 3)
     report["rag_latency"] = round(pipeline_totals["rag"] / count, 3)
     report["llm_latency"] = round(pipeline_totals["llm"] / count, 3)
@@ -373,7 +379,6 @@ def main():
     report["web_fallback_latency"] = round(pipeline_totals["web_fallback"] / count, 3)
     report["pipeline_total_latency"] = round(pipeline_totals["total"] / count, 3)
 
-    # 6. Latency Percentiles block processing
     latencies = sorted(metrics.latencies)
     if latencies:
         report["median_latency"] = round(
@@ -397,7 +402,6 @@ def main():
     report["reranker_latency"] = round(rag_totals["reranker"] / count, 3)
     report["retrieval_total_latency"] = round(rag_totals["total"] / count, 3)
 
-    # 5. RAG sub-component retrieval hit metrics processing definitions
     report["avg_dense_hits"] = round(
         sum(getattr(metrics, "dense_hits", [])) / count,
         2

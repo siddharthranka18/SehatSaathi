@@ -1,6 +1,5 @@
-from pydantic import BaseModel, Field
-from typing import List, Literal, Dict
-
+from pydantic import BaseModel, Field, ConfigDict
+from typing import List, Literal, Dict, Any
 
 class Message(BaseModel):
     role: Literal["user", "assistant"]
@@ -13,6 +12,8 @@ class TriageRequest(BaseModel):
 
 
 class TriageResponse(BaseModel):
+    model_config = ConfigDict(extra='allow')
+    
     reply: str
     urgency: str
     is_final: bool
@@ -92,9 +93,9 @@ class TriageResponse(BaseModel):
         description="Top CrossEncoder reranker scores"
     )
 
-    retrieval_stats: Dict[str, float] = Field(
+    retrieval_stats: Dict[str, Any] = Field(
         default_factory=dict,
-        description="Additional retrieval statistics"
+        description="Detailed retrieval statistics"
     )
 
     conversation_turns: int = Field(
