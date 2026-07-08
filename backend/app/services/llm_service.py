@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 from dotenv import load_dotenv
 from groq import Groq
-from ..models.schemas import TriageRequest, TriageResponse
+from ..models.schemas import TriageRequest, TriageResponse, RetrievalStats
 from .rag_service import retrieve_context
 from .query_service import rewrite_query
 from .safety_service import check_red_flags, validate_ai_response
@@ -139,6 +139,23 @@ def parse_llm_json(raw):
         raw = match.group()
     return json.loads(raw)
 
+def _normalize_retrieval_stats(stats, query: str = "") -> RetrievalStats:
+    if isinstance(stats, RetrievalStats):
+        return stats
+
+    if not isinstance(stats, dict):
+        stats = {}
+
+    payload = {
+        "query": query or stats.get("query", ""),
+        "candidate_chunks": stats.get("candidate_chunks", 0),
+        "parent_documents": stats.get("parent_documents", 0),
+        "reranked_documents": stats.get("reranked_documents", 0),
+        "returned_documents": stats.get("returned_documents", 0),
+    }
+
+    return RetrievalStats.model_validate(payload)
+
 
 def run_triage(request: TriageRequest) -> TriageResponse:
 
@@ -146,6 +163,7 @@ def run_triage(request: TriageRequest) -> TriageResponse:
     total_start = time.perf_counter()
 
     full_text = " ".join([m.content for m in request.conversation])
+    retrieval_stats = RetrievalStats()
 
     # Safety check runs only on USER messages — not assistant replies.
     # Running on full_text (including AI responses) causes false positives:
@@ -173,7 +191,7 @@ def run_triage(request: TriageRequest) -> TriageResponse:
             parent_hits=0,
             dense_scores=[],
             reranker_scores=[],
-            retrieval_stats={},
+            retrieval_stats=retrieval_stats,
             conversation_turns=len(request.conversation),
         )
 
@@ -187,6 +205,10 @@ def run_triage(request: TriageRequest) -> TriageResponse:
     t0 = time.perf_counter()
     rag_result = retrieve_context(rewritten_query)
     pipeline_timings["rag"] = round(time.perf_counter() - t0, 4)
+    retrieval_stats = _normalize_retrieval_stats(
+        rag_result.get("retrieval_stats", {}),
+        query=rewritten_query,
+    )
 
     print("\n========== TRIAGE DEBUG ==========")
     print("RAG Source:", "medical_guideline_rag" if rag_result["confident"] else "web_fallback")
@@ -272,7 +294,7 @@ Clearly mention that this information is from web search and may not be clinical
             parent_hits=rag_result.get("parent_hits", 0),
             dense_scores=rag_result.get("dense_scores", []),
             reranker_scores=rag_result.get("reranker_scores", []),
-            retrieval_stats=rag_result.get("retrieval_stats", {}),
+            retrieval_stats=retrieval_stats,
             conversation_turns=conversation_turns,
         )
 
@@ -297,7 +319,7 @@ Clearly mention that this information is from web search and may not be clinical
             parent_hits=rag_result.get("parent_hits", 0),
             dense_scores=rag_result.get("dense_scores", []),
             reranker_scores=rag_result.get("reranker_scores", []),
-            retrieval_stats=rag_result.get("retrieval_stats", {}),
+            retrieval_stats=retrieval_stats,
             conversation_turns=conversation_turns,
         )
 
@@ -321,6 +343,6 @@ Clearly mention that this information is from web search and may not be clinical
         context_length=context_length,
         dense_scores=rag_result.get("dense_scores", []),
         reranker_scores=rag_result.get("reranker_scores", []),
-        retrieval_stats=rag_result.get("retrieval_stats", {}),
+        retrieval_stats=retrieval_stats,
         conversation_turns=conversation_turns,
     )

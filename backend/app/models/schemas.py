@@ -11,6 +11,35 @@ class TriageRequest(BaseModel):
     language: str = "en"
 
 
+class RetrievalStats(BaseModel):
+    model_config = ConfigDict(extra='allow')
+
+    query: str = Field(
+        default="",
+        description="Query used for retrieval"
+    )
+
+    candidate_chunks: int = Field(
+        default=0,
+        description="Number of candidate chunks considered"
+    )
+
+    parent_documents: int = Field(
+        default=0,
+        description="Number of parent documents after chunk-to-parent mapping"
+    )
+
+    reranked_documents: int = Field(
+        default=0,
+        description="Number of documents after reranking"
+    )
+
+    returned_documents: int = Field(
+        default=0,
+        description="Number of documents returned to the LLM"
+    )
+
+
 class TriageResponse(BaseModel):
     model_config = ConfigDict(extra='allow')
     
@@ -93,8 +122,8 @@ class TriageResponse(BaseModel):
         description="Top CrossEncoder reranker scores"
     )
 
-    retrieval_stats: Dict[str, Any] = Field(
-        default_factory=dict,
+    retrieval_stats: RetrievalStats = Field(
+        default_factory=RetrievalStats,
         description="Detailed retrieval statistics"
     )
 
