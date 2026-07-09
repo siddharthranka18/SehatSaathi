@@ -1,6 +1,20 @@
 # SehatSaathi
 
+[![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](docker-compose.yml)
+
 A concise AI-powered medical triage assistant. SehatSaathi uses a retrieval-augmented-generation (RAG) pipeline plus a safety layer to provide urgency guidance (home_care, visit_phc, critical) based on curated medical guidelines and optional web fallback.
+
+---
+
+<!-- Hero -->
+## 
+<p align="center">
+	<img alt="SehatSaathi" src="https://img.shields.io/badge/SehatSaathi-Healthcare%20Assistant-orange?logo=healthicons&logoColor=white" />
+	<br/>
+	<em>An explainable, retrieval-first medical triage assistant</em>
+</p>
 
 ---
 
@@ -11,6 +25,40 @@ A concise AI-powered medical triage assistant. SehatSaathi uses a retrieval-augm
 - Groq LLM integration for structured JSON responses
 - Optional Qdrant vector store for indexing medical guideline chunks
 - Simple React + Vite frontend
+
+---
+
+**Architecture (overview)**
+
+```mermaid
+flowchart LR
+	User[User (Web / Voice)] -->|POST /api/triage| Frontend[Frontend (React + Vite)]
+	Frontend --> Backend[Backend (FastAPI)]
+	Backend --> RAG[RAG Retriever]
+	RAG --> Qdrant[Qdrant / BM25 Index]
+	Backend --> LLM[Groq LLM]
+	Backend --> Safety[Safety Layer]
+	Backend --> WebFallback[Web Search Fallback]
+	LLM -->|JSON reply| Backend
+	Backend -->|response| Frontend
+```
+
+This diagram highlights the retrieval-first flow: the backend rewrites the query, retrieves context from local guideline indexes (or web fallback), runs a constrained LLM call, and applies output safety before returning a structured JSON reply.
+
+---
+
+**Screenshots / Visuals**
+
+Add screenshots to `assets/` and reference them here for a polished README. Example placeholders:
+
+![Screenshot 1](assets/screenshot-1.png)
+![Screenshot 2](assets/screenshot-2.png)
+
+To add your own screenshots:
+
+1. Create an `assets/` folder in the repo root.
+2. Add `screenshot-1.png` and `screenshot-2.png` (or update filenames below).
+3. Commit the images. The README will render them on GitHub.
 
 ---
 
