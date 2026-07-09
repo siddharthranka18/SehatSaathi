@@ -1,194 +1,317 @@
-# SehatSaathi
+<div align="center">
 
-[![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](docker-compose.yml)
+<img src="https://img.shields.io/badge/SehatSaathi-AI%20Health%20Triage-C8A45A?style=for-the-badge&logoColor=white" alt="SehatSaathi" />
 
-A concise AI-powered medical triage assistant. SehatSaathi uses a retrieval-augmented-generation (RAG) pipeline plus a safety layer to provide urgency guidance (home_care, visit_phc, critical) based on curated medical guidelines and optional web fallback.
+<br />
+<br />
 
----
+**Voice-first AI health triage assistant for rural and elderly India**
 
-<!-- Hero -->
-## 
-<p align="center">
-	<img alt="SehatSaathi" src="https://img.shields.io/badge/SehatSaathi-Healthcare%20Assistant-orange?logo=healthicons&logoColor=white" />
-	<br/>
-	<em>An explainable, retrieval-first medical triage assistant</em>
-</p>
+*Describe your symptom. Get a clear answer. Know what to do next.*
 
----
+<br />
 
-**Highlights**
-- Python FastAPI backend serving a triage API
-- Retrieval from curated medical guidelines (BM25 / dense + reranker)
-- Safety override and output guardrails
-- Groq LLM integration for structured JSON responses
-- Optional Qdrant vector store for indexing medical guideline chunks
-- Simple React + Vite frontend
+[![Python](https://img.shields.io/badge/Python-3.11-1B3A4B?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.111-1B3A4B?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![React](https://img.shields.io/badge/React-18-1B3A4B?style=flat-square&logo=react&logoColor=white)](https://react.dev)
+[![Docker](https://img.shields.io/badge/Docker-Ready-1B3A4B?style=flat-square&logo=docker&logoColor=white)](docker-compose.yml)
+[![Groq](https://img.shields.io/badge/Groq-LLaMA%203.3-1B3A4B?style=flat-square&logoColor=white)](https://groq.com)
+[![License](https://img.shields.io/badge/License-MIT-C8A45A?style=flat-square)](LICENSE)
+
+<br />
+
+</div>
 
 ---
 
-**Architecture (overview)**
+## The Problem
 
-```mermaid
-flowchart LR
-	User[User (Web / Voice)] -->|POST /api/triage| Frontend[Frontend (React + Vite)]
-	Frontend --> Backend[Backend (FastAPI)]
-	Backend --> RAG[RAG Retriever]
-	RAG --> Qdrant[Qdrant / BM25 Index]
-	Backend --> LLM[Groq LLM]
-	Backend --> Safety[Safety Layer]
-	Backend --> WebFallback[Web Search Fallback]
-	LLM -->|JSON reply| Backend
-	Backend -->|response| Frontend
+India's rural doctor-to-patient ratio is **1:11,000** — nearly 11× worse than the national average. When a rural or elderly patient experiences a symptom, they face three barriers at once: a multi-hour trip to the nearest clinic, no quick way to assess urgency, and no follow-up support once they do get care.
+
+**SehatSaathi** is a voice-first AI companion that fills this gap — not by replacing doctors, but by giving patients a trusted, instant first response in their own language.
+
+---
+
+## What It Does
+
+A patient describes their symptom by typing or speaking. SehatSaathi asks a few short, adaptive follow-up questions — the way a triage nurse would — then delivers a clear verdict:
+
+| Verdict | Meaning |
+|---|---|
+| 🟢 **Home Care** | Manageable at home with guidance |
+| 🟡 **Visit PHC** | See a doctor within 24–48 hours |
+| 🔴 **Critical** | Seek urgent medical attention now |
+
+Every answer is grounded in verified WHO and ICMR medical guidelines — not open-ended AI reasoning — and the source is shown to the user.
+
+---
+
+## Architecture
+
 ```
-
-This diagram highlights the retrieval-first flow: the backend rewrites the query, retrieves context from local guideline indexes (or web fallback), runs a constrained LLM call, and applies output safety before returning a structured JSON reply.
-
----
-
-**Screenshots / Visuals**
-
-Add screenshots to `assets/` and reference them here for a polished README. Example placeholders:
-
-![Screenshot 1](assets/screenshot-1.png)
-![Screenshot 2](assets/screenshot-2.png)
-
-To add your own screenshots:
-
-1. Create an `assets/` folder in the repo root.
-2. Add `screenshot-1.png` and `screenshot-2.png` (or update filenames below).
-3. Commit the images. The README will render them on GitHub.
-
----
-
-**Repository Layout**
-- `backend/` — FastAPI app, services, routers, models and ML/RAG logic
-	- `backend/app/main.py` — application entry (FastAPI app, startup warmup)
-	- `backend/app/routers/triage.py` — `/api/triage` endpoint
-	- `backend/app/services/` — RAG, LLM, safety, query rewrite, web fallback, TTS, etc.
-	- `backend/requirements.txt` — Python dependencies
-- `data/guidelines/` — curated medical guideline text files used for retrieval
-- `backend/data/rag_index/` and `backend/data/qdrant/` — local stored indexes and metadata
-- `frontend/` — React + Vite single-page app (dev server on 5173)
-- `docker-compose.yml` — quick start using Docker (qdrant, backend, frontend)
-
----
-
-Quick Overview
-- API base: `GET /` and `GET /health`
-- Triage endpoint: `POST /api/triage` — accepts a conversation payload and returns a JSON object with `reply`, `urgency`, `is_final`, and pipeline metadata.
-
-Example request shape (conversation-style messages):
-
-```json
-{
-	"conversation": [
-		{"role": "user", "content": "I have chest pain and shortness of breath"}
-	]
-}
-```
-
-Example (partial) response:
-
-```json
-{
-	"reply": "This may be an emergency. Seek immediate care.",
-	"urgency": "critical",
-	"is_final": true
-}
+User (voice or text)
+        │
+        ▼
+┌──────────────────────────────────────────────────────────┐
+│                    FastAPI Backend                        │
+│                                                          │
+│  Input ──► Hard Safety Rules ──► [STOP if red flag]      │
+│                │                                         │
+│                ▼                                         │
+│         Query Rewriting (LLM)                            │
+│                │                                         │
+│                ▼                                         │
+│    ┌───────────────────────────┐                         │
+│    │     Hybrid RAG Pipeline   │                         │
+│    │                           │                         │
+│    │  Dense (Qdrant + HNSW)    │                         │
+│    │         +                 │                         │
+│    │  Sparse (BM25)            │                         │
+│    │         │                 │                         │
+│    │   RRF Fusion              │                         │
+│    │         │                 │                         │
+│    │  Parent Doc Retrieval     │                         │
+│    │         │                 │                         │
+│    │  Cross-Encoder Reranking  │                         │
+│    └───────────────────────────┘                         │
+│                │                                         │
+│                ▼                                         │
+│       Confidence Check                                   │
+│        /              \                                  │
+│  High confidence    Low confidence                       │
+│  (Local KB)         (Web Fallback)                       │
+│        \              /                                  │
+│                ▼                                         │
+│        Groq LLM Reasoning                                │
+│         (LLaMA 3.3-70B)                                  │
+│                │                                         │
+│                ▼                                         │
+│        Output Safety Check                               │
+│                │                                         │
+│                ▼                                         │
+│     Structured JSON Response                             │
+└──────────────────────────────────────────────────────────┘
+        │
+        ▼
+React Frontend (chat UI + voice input + TTS)
 ```
 
 ---
 
-Getting started (local development)
+## Pipeline Deep Dive
 
-Prerequisites
-- Python 3.11
-- Node 18+ / npm or yarn
-- (Optional) Docker & Docker Compose
+### 1 — Hard Safety Rules
+Before any AI runs, a deterministic keyword checker scans for red-flag symptoms (chest pain, breathing difficulty, unconsciousness, severe bleeding). If matched, the system immediately returns `critical` — the LLM cannot override this.
 
-Backend (local)
+### 2 — Query Rewriting
+Colloquial, multilingual input like *"kal se pet mein dard hai thoda"* is rewritten to clean medical terminology (*"mild abdominal pain since yesterday"*) before retrieval. This significantly improves embedding match quality.
 
-1. Create and activate a virtual environment:
+### 3 — Hybrid RAG Retrieval
+Two retrievers run simultaneously:
+- **Dense retrieval** — `paraphrase-MiniLM-L3-v2` embeddings stored in Qdrant (HNSW index) for semantic matching
+- **Sparse retrieval** — BM25 for exact keyword matching (drug names, symptom codes)
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+Results are fused using **Reciprocal Rank Fusion (RRF)** — a rank-based combination method that avoids score normalization issues.
+
+### 4 — Parent Document Retrieval
+Documents are indexed as small sentence-level child chunks (for precise retrieval) but when a child matches, the full parent section is fetched to give the LLM broader context.
+
+### 5 — Cross-Encoder Reranking
+Top fused candidates are rescored by `cross-encoder/ms-marco-MiniLM-L-6-v2`, which evaluates (query, document) pairs jointly — far more accurate than the bi-encoder used for retrieval.
+
+### 6 — Confidence-Gated Web Fallback
+If the reranker's top score falls below a threshold, the system falls back to a live Groq web search rather than forcing low-quality local context. Web results are explicitly flagged to the LLM as unverified.
+
+### 7 — Output Safety Guardrail
+The LLM's response passes a second safety check before returning — scanning for diagnostic language or unsafe claims. If triggered, a safe redirect replaces the response.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **LLM** | LLaMA 3.3-70B via Groq API |
+| **Embeddings** | `paraphrase-MiniLM-L3-v2` (sentence-transformers) |
+| **Vector DB** | Qdrant (local file mode or Docker container) |
+| **Reranker** | `cross-encoder/ms-marco-MiniLM-L-6-v2` |
+| **Sparse Retrieval** | BM25 (rank-bm25) |
+| **Backend** | FastAPI + Uvicorn |
+| **Frontend** | React 18 + Vite |
+| **Voice I/O** | Web Speech API (STT) + SpeechSynthesis (TTS) |
+| **Containerisation** | Docker + Docker Compose |
+
+---
+
+## Project Structure
+
+```
+SehatSaathi/
+├── backend/
+│   ├── app/
+│   │   ├── main.py                  # FastAPI app + lifespan startup
+│   │   ├── routers/
+│   │   │   └── triage.py            # POST /api/triage
+│   │   ├── services/
+│   │   │   ├── llm_service.py       # Triage orchestration + pipeline timings
+│   │   │   ├── rag_service.py       # Hybrid RAG + reranking + timings
+│   │   │   ├── query_service.py     # Query rewriting
+│   │   │   ├── safety_service.py    # Input + output safety checks
+│   │   │   ├── web_search_service.py# Web search fallback
+│   │   │   └── evaluation_service.py# Evaluation helpers
+│   │   └── models/
+│   │       └── schemas.py           # Pydantic request/response schemas
+│   ├── data/
+│   │   ├── guidelines/              # WHO, ICMR, AYUSH, First Aid text files
+│   │   ├── rag_index/               # Serialised chunks + parent store
+│   │   └── qdrant/                  # Local Qdrant vector files
+│   ├── evaluation/
+│   │   ├── test_cases.json          # Labelled test questions
+│   │   ├── evaluate.py              # Accuracy, latency, precision, recall
+│   │   ├── metrics.py               # Metric functions
+│   │   ├── confusion.py             # Confusion matrix builder
+│   │   ├── charts.py                # Accuracy, latency, confidence charts
+│   │   └── report.html              # Evaluation dashboard
+│   └── requirements.txt
+├── frontend/
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── Landing.jsx          # Hero + typewriter + feature cards
+│   │   │   └── Home.jsx             # Chat interface + TTS toggle
+│   │   └── components/
+│   │       ├── ChatBubble.jsx       # Message bubble + source indicator
+│   │       ├── TriageCard.jsx       # Urgency verdict card
+│   │       └── VoiceInput.jsx       # Mic button + Web Speech API
+│   ├── index.html
+│   └── vite.config.js
+├── docker-compose.yml
+├── Dockerfile
+└── .env                             # GROQ_API_KEY, GROQ_MODEL, QDRANT_HOST
 ```
 
-2. Install dependencies and run the API:
+---
 
-```powershell
+## Quickstart
+
+### Option A — Docker (recommended)
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/yourusername/SehatSaathi.git
+cd SehatSaathi
+
+# 2. Create .env file
+cp .env.example .env
+# Add your GROQ_API_KEY to .env
+
+# 3. Start everything
+docker compose up --build
+```
+
+Open `http://localhost:5173` — the full app is running.
+
+> **First run** takes 5–10 minutes to build images and download ML models (~200 MB). Every subsequent start is under 30 seconds.
+
+### Option B — Local Development
+
+**Backend:**
+```bash
 cd backend
-pip install --upgrade pip
+python -m venv .venv
+.venv\Scripts\activate        # Windows
+# source .venv/bin/activate   # Mac/Linux
 pip install -r requirements.txt
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn app.main:app --reload --port 8000
 ```
 
-3. Environment variables
-- Copy or create a `.env` file at the repository root or `backend/` directory. Common variables:
-	- `GROQ_API_KEY` — Groq (LLM) API key
-	- `GROQ_MODEL` — model to use (e.g. `llama-3.3-70b-versatile`)
-	- `QDRANT_HOST` — host for Qdrant if used (docker-compose sets `qdrant`)
-	- `FAST_DEV=1` — skip heavy ML model loads and use BM25-only retrieval for fast dev cycles
-
-Frontend (local)
-
-```powershell
+**Frontend** (separate terminal):
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-The frontend dev server expects the backend at `http://localhost:8000` by default. Update `VITE_API_URL` in the environment if needed.
+Open `http://localhost:5173`.
 
 ---
 
-Docker / Production
+## Environment Variables
 
-Quick start with Docker Compose (builds backend & frontend, runs Qdrant):
+Create a `.env` file at the project root:
 
-```powershell
-docker compose up --build
+```env
+GROQ_API_KEY=your_groq_api_key_here
+GROQ_MODEL=llama-3.3-70b-versatile
+QDRANT_HOST=local
 ```
 
-The `docker-compose.yml` included launches:
-- `qdrant` (vector store) on port `6333`
-- `backend` on port `8000`
-- `frontend` on port `5173`
-
-See `docker-compose.yml` for volumes and env mappings.
-
----
-
-Data & Indexing
-- Curated clinical guideline text files are in `data/guidelines/` — these are the primary source used for retrieval.
-- A sample local RAG index and threshold settings are under `backend/data/rag_index/` and `backend/data/qdrant/`.
-
-Indexing / re-build utilities
-- The repo includes helper scripts in `backend/` for (re)building and testing indexes. Review `backend/rebuild_store.py` and `backend/rebuild_and_test_rag.py` for details.
+| Variable | Description | Default |
+|---|---|---|
+| `GROQ_API_KEY` | Groq API key — get one free at [console.groq.com](https://console.groq.com) | required |
+| `GROQ_MODEL` | Groq model name | `llama-3.3-70b-versatile` |
+| `QDRANT_HOST` | `local` for file-based Qdrant, `qdrant` inside Docker | `local` |
 
 ---
 
-Design notes
-- Retrieval-first architecture: queries are rewritten, run through a retrieval pass (BM25 + optional dense + reranker) and then combined with verified context to produce a constrained JSON response from the LLM.
-- Safety: there are two safety layers — an early `safety_override` (detects urgent red flags in user text) and an output guardrail that prevents harmful or disallowed content in the final reply.
-- Fast dev mode: setting `FAST_DEV=1` disables heavy ML model warmup and runs a BM25-only retrieval path for quicker testing.
+## API Reference
+
+### `POST /api/triage`
+
+Request:
+```json
+{
+  "conversation": [
+    {"role": "user", "content": "I have had a fever for 3 days"}
+  ],
+  "language": "en"
+}
+```
+
+Response:
+```json
+{
+  "reply": "How high is the fever and do you have any other symptoms?",
+  "urgency": "unclear",
+  "is_final": false,
+  "source": "medical_guideline_rag",
+  "confidence": 0.87,
+  "retrieved_sources": ["who_triage.txt"],
+  "pipeline_timings": {
+    "safety": 0.0001,
+    "rewrite": 0.31,
+    "rag": 0.82,
+    "llm": 2.94,
+    "total": 4.07
+  }
+}
+```
+
+### `GET /`
+Health check — returns `{"message": "SehatSaathi API running"}`.
 
 ---
 
-Testing & evaluation
-- Evaluation scripts and tuning utilities exist under `backend/evaluation/` (metrics, confusion, tuning reports).
+## Voice Features
+
+- **Speech-to-text** — browser Web Speech API; tap the mic, speak your symptom, it auto-sends
+- **Text-to-speech** — AI replies are read aloud automatically; language detected from unicode range (Devanagari → `hi-IN`, Tamil → `ta-IN`, Bengali → `bn-IN`, default → `en-IN`)
+- **Mute toggle** — speaker icon in the chat header
+- **Chrome only** — Web Speech API is not supported in Firefox or Safari
 
 ---
 
-Contributing
-- Please open issues or PRs for bugs and improvements.
-- For model, retrieval or safety changes, include tests or evaluation runs demonstrating behavior changes.
+## Medical Disclaimer
+
+> SehatSaathi provides **triage guidance only** — it is not a diagnostic tool and does not replace professional medical advice. Always consult a qualified healthcare professional for diagnosis and treatment. In an emergency, call **112**.
 
 ---
 
-Contact
-- Project maintained in this repository. For questions about running locally or Docker, open an issue.
+## License
 
+MIT — see [LICENSE](LICENSE) for details.
+
+---
+
+<div align="center">
+Built for the <strong>Stellan AI Buildathon</strong> · Made with care for rural India
+</div>
