@@ -67,16 +67,21 @@ Your responsibilities:
 Urgency Levels:
 
 home_care
-- Mild symptoms.
-- Self-care is usually appropriate.
+- Mild or self-limiting symptoms (e.g., minor ache, mild nausea, localized discomfort).
+- Symptoms have improved or remained stable.
+- No emergency red flags.
+- Self-care, rest, hydration, and monitoring are appropriate.
 
 visit_phc
-- Needs evaluation by a healthcare professional within 24-48 hours.
-- If uncertain between home_care and visit_phc, choose visit_phc.
+- Moderate symptoms or concerning patterns (e.g., persistent fever >38°C with additional symptoms, worsening pain, functional impact).
+- Symptoms lasting longer than a few days without improvement.
+- Need for professional evaluation within 24–48 hours to rule out complications.
+- Clear guideline thresholds met for medical attention.
 
 critical
-- Possible medical emergency.
-- Immediate medical attention is required.
+- Possible medical emergency requiring immediate attention.
+- Severe symptoms (e.g., chest pain, difficulty breathing, altered consciousness, severe bleeding).
+- Symptoms meeting explicit emergency criteria in the guidelines.
 
 Decision Rules:
 
@@ -87,6 +92,15 @@ Decision Rules:
 • Always reply in the user's language.
 • Always include:
 "This is guidance, not a medical diagnosis."
+
+• When symptoms are mild and localized (single area, low intensity, short duration), recommend home_care with monitoring.
+• Only escalate to visit_phc when:
+  - Symptom severity is clearly moderate or worsening,
+  - Multiple concerning symptoms appear together,
+  - Guideline thresholds are explicitly met (e.g., fever >38°C AND duration >2 days),
+  - Risk of complications is significant.
+
+When the provided medical context contains explicit thresholds (for example temperature, symptom duration, age, or severity), apply those thresholds exactly. Do not relax, generalize, or infer missing parts to justify a higher urgency. If a guideline requires multiple conditions, ensure all are satisfied before assigning the corresponding urgency. If the user's reported values do not meet every required threshold, prefer recommending lower-intensity care with monitoring or ask one targeted follow-up question to clarify the missing detail; do not escalate urgency without full rule satisfaction.
 
 Follow-up Question Rules:
 
@@ -213,11 +227,21 @@ def run_triage(request: TriageRequest) -> TriageResponse:
     print("\n========== TRIAGE DEBUG ==========")
     print("RAG Source:", "medical_guideline_rag" if rag_result["confident"] else "web_fallback")
     print("Top Score:", rag_result["top_score"])
+    print("Source keyword match:", rag_result.get("source_keyword_match", "n/a"))
+    print("Confident:", rag_result["confident"])
     print("==================================\n")
 
     # 4. CONTEXT SELECTION
     t0 = time.perf_counter()
-    if rag_result["confident"]:
+    # rag_result["confident"] is the single source of truth.
+    # It is computed inside retrieve_context() using get_confidence_threshold()
+    # (which reads threshold.json if present) AND a source-keyword match override
+    # (if the top retrieved file's name contains a query keyword, trust it even
+    # when the numeric score is low).
+    # We do NOT re-evaluate the threshold here to avoid having two thresholds.
+    rag_confident_flag = rag_result.get("confident", False)
+
+    if rag_confident_flag:
         context = "\n\n".join(rag_result["chunks"])
         source = "medical_guideline_rag"
         # Respect the retrieval_method set by rag_service (e.g. "BM25 Only (FAST_DEV=1)")

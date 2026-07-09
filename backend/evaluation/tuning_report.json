@@ -1,0 +1,1144 @@
+{
+  "tuning_result": {
+    "threshold": 0.0,
+    "retrieval_accuracy": 28.037383177570092,
+    "web_fallback_rate": 0.9345794392523363,
+    "avg_confidence": 6.757294603714324,
+    "avg_latency": 0.0008161457997494351
+  },
+  "baseline": {
+    "threshold": 0.0,
+    "retrieval_accuracy": 28.037383177570092,
+    "web_fallback_rate": 0.9345794392523363,
+    "avg_confidence": 6.757294603714324,
+    "avg_latency": 0.0008161457997494351
+  },
+  "samples": [
+    {
+      "question": "Fever",
+      "expected_source": "fever.txt",
+      "top_score": 2.2981073969213264,
+      "retrieved_sources": [
+        "who_triage.txt",
+        "diarrhea.txt",
+        "fever.txt"
+      ],
+      "latency": 0.017395099974237382
+    },
+    {
+      "question": "High fever for five days",
+      "expected_source": "fever.txt",
+      "top_score": 6.629528949654334,
+      "retrieved_sources": [
+        "ayush.txt",
+        "food_poisoning.txt",
+        "diarrhea.txt"
+      ],
+      "latency": 0.0004653999931178987
+    },
+    {
+      "question": "Chest pain with difficulty breathing",
+      "expected_source": "heart.txt",
+      "top_score": 9.90689777414821,
+      "retrieved_sources": [
+        "who_triage.txt",
+        "heart.txt",
+        "acidity.txt"
+      ],
+      "latency": 0.00033569999504834414
+    },
+    {
+      "question": "Small headache after studying",
+      "expected_source": "who_triage.txt",
+      "top_score": 3.9263651009640057,
+      "retrieved_sources": [
+        "gastritis.txt",
+        "nausea_vomiting.txt"
+      ],
+      "latency": 0.00040280004031956196
+    },
+    {
+      "question": "Vomiting continuously for three days",
+      "expected_source": "who_triage.txt",
+      "top_score": 3.489708903153379,
+      "retrieved_sources": [
+        "nausea_vomiting.txt",
+        "diarrhea.txt",
+        "constipation.txt"
+      ],
+      "latency": 0.0004959000507369637
+    },
+    {
+      "question": "Severe bleeding after accident",
+      "expected_source": "first_aid.txt",
+      "top_score": 4.404635393718571,
+      "retrieved_sources": [
+        "constipation.txt",
+        "allergies.txt"
+      ],
+      "latency": 0.0006053000106476247
+    },
+    {
+      "question": "Mild stomach pain after eating spicy food",
+      "expected_source": "who_triage.txt",
+      "top_score": 8.868072796306347,
+      "retrieved_sources": [
+        "food_poisoning.txt",
+        "gastritis.txt"
+      ],
+      "latency": 0.0008541999850422144
+    },
+    {
+      "question": "Fever with unconsciousness",
+      "expected_source": "fever.txt",
+      "top_score": 3.1187023979076938,
+      "retrieved_sources": [
+        "fever.txt",
+        "who_triage.txt",
+        "fungal_infection.txt"
+      ],
+      "latency": 0.00038670003414154053
+    },
+    {
+      "question": "Loose motion for one day",
+      "expected_source": "who_triage.txt",
+      "top_score": 8.874637225086927,
+      "retrieved_sources": [
+        "diarrhea.txt",
+        "ayush.txt"
+      ],
+      "latency": 0.0006155999726615846
+    },
+    {
+      "question": "Persistent cough for two weeks",
+      "expected_source": "who_triage.txt",
+      "top_score": 7.719644754141864,
+      "retrieved_sources": [
+        "who_triage.txt",
+        "fungal_infection.txt",
+        "ayush.txt"
+      ],
+      "latency": 0.0005902000120840967
+    },
+    {
+      "question": "Mild cold and runny nose",
+      "expected_source": "who_triage.txt",
+      "top_score": 11.981495951868393,
+      "retrieved_sources": [
+        "ayush.txt",
+        "allergies.txt",
+        "acidity.txt"
+      ],
+      "latency": 0.0007000999758020043
+    },
+    {
+      "question": "Sore throat since yesterday",
+      "expected_source": "who_triage.txt",
+      "top_score": 5.521515105904953,
+      "retrieved_sources": [
+        "acidity.txt",
+        "fungal_infection.txt"
+      ],
+      "latency": 0.0006090999813750386
+    },
+    {
+      "question": "Minor paper cut on finger",
+      "expected_source": "first_aid.txt",
+      "top_score": 5.628278005640771,
+      "retrieved_sources": [
+        "first_aid.txt",
+        "allergies.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0007105999975465238
+    },
+    {
+      "question": "Slight body ache after exercise",
+      "expected_source": "who_triage.txt",
+      "top_score": 10.940283319112705,
+      "retrieved_sources": [
+        "ayush.txt",
+        "gastritis.txt",
+        "abdominal_pain.txt"
+      ],
+      "latency": 0.0005522000137716532
+    },
+    {
+      "question": "Occasional sneezing in the morning",
+      "expected_source": "who_triage.txt",
+      "top_score": 5.079091089683907,
+      "retrieved_sources": [
+        "acidity.txt",
+        "first_aid.txt"
+      ],
+      "latency": 0.0005872999900020659
+    },
+    {
+      "question": "Mild acidity after meal",
+      "expected_source": "ayush.txt",
+      "top_score": 5.412117121297848,
+      "retrieved_sources": [
+        "acidity.txt"
+      ],
+      "latency": 0.00038129999302327633
+    },
+    {
+      "question": "Small mosquito bite with itching",
+      "expected_source": "first_aid.txt",
+      "top_score": 5.340319955488927,
+      "retrieved_sources": [
+        "fungal_infection.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0005348999984562397
+    },
+    {
+      "question": "Feeling tired after a long day",
+      "expected_source": "who_triage.txt",
+      "top_score": 6.6054700534932485,
+      "retrieved_sources": [
+        "abdominal_pain.txt",
+        "diarrhea.txt",
+        "gastritis.txt"
+      ],
+      "latency": 0.000494500040076673
+    },
+    {
+      "question": "Dry skin on hands in winter",
+      "expected_source": "ayush.txt",
+      "top_score": 5.84759494798725,
+      "retrieved_sources": [
+        "fungal_infection.txt",
+        "allergies.txt"
+      ],
+      "latency": 0.0004499000497162342
+    },
+    {
+      "question": "Mild gas and bloating",
+      "expected_source": "ayush.txt",
+      "top_score": 5.683809686459337,
+      "retrieved_sources": [
+        "abdominal_pain.txt",
+        "gastritis.txt",
+        "constipation.txt"
+      ],
+      "latency": 0.0004789000377058983
+    },
+    {
+      "question": "Watery eyes from dust",
+      "expected_source": "who_triage.txt",
+      "top_score": 6.387823273805716,
+      "retrieved_sources": [
+        "diarrhea.txt",
+        "gastritis.txt"
+      ],
+      "latency": 0.0003880000440403819
+    },
+    {
+      "question": "Light sunburn on arms",
+      "expected_source": "first_aid.txt",
+      "top_score": 4.693684698917002,
+      "retrieved_sources": [
+        "skin_diseases.txt",
+        "allergies.txt",
+        "abdominal_pain.txt"
+      ],
+      "latency": 0.0003234000178053975
+    },
+    {
+      "question": "Hiccups that won't stop for an hour",
+      "expected_source": "who_triage.txt",
+      "top_score": 9.867625147023988,
+      "retrieved_sources": [
+        "first_aid.txt",
+        "food_poisoning.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0004437000025063753
+    },
+    {
+      "question": "Slight nausea after car ride",
+      "expected_source": "who_triage.txt",
+      "top_score": 6.702580596531888,
+      "retrieved_sources": [
+        "abdominal_pain.txt",
+        "diarrhea.txt",
+        "nausea_vomiting.txt"
+      ],
+      "latency": 0.0003399999695830047
+    },
+    {
+      "question": "Minor bruise on knee from fall",
+      "expected_source": "first_aid.txt",
+      "top_score": 8.171980656352474,
+      "retrieved_sources": [
+        "skin_diseases.txt",
+        "nausea_vomiting.txt"
+      ],
+      "latency": 0.00040990003617480397
+    },
+    {
+      "question": "Stiff neck from sleeping wrong",
+      "expected_source": "who_triage.txt",
+      "top_score": 6.488547326919525,
+      "retrieved_sources": [
+        "nausea_vomiting.txt",
+        "acidity.txt"
+      ],
+      "latency": 0.0003467000206001103
+    },
+    {
+      "question": "Mild constipation for two days",
+      "expected_source": "ayush.txt",
+      "top_score": 7.094251029642966,
+      "retrieved_sources": [
+        "constipation.txt"
+      ],
+      "latency": 0.0003451000084169209
+    },
+    {
+      "question": "Common cold with sneezing and mild headache",
+      "expected_source": "who_triage.txt",
+      "top_score": 10.761572400869506,
+      "retrieved_sources": [
+        "ayush.txt",
+        "nausea_vomiting.txt"
+      ],
+      "latency": 0.0004982000100426376
+    },
+    {
+      "question": "Slight muscle cramp in calf",
+      "expected_source": "who_triage.txt",
+      "top_score": 4.396890550972778,
+      "retrieved_sources": [
+        "abdominal_pain.txt",
+        "food_poisoning.txt",
+        "fungal_infection.txt"
+      ],
+      "latency": 0.0003399999695830047
+    },
+    {
+      "question": "Eye strain from too much screen time",
+      "expected_source": "who_triage.txt",
+      "top_score": 4.021922277504455,
+      "retrieved_sources": [
+        "constipation.txt",
+        "gastritis.txt",
+        "food_poisoning.txt"
+      ],
+      "latency": 0.00047309999354183674
+    },
+    {
+      "question": "Low grade fever of 99\u00b0F since morning",
+      "expected_source": "fever.txt",
+      "top_score": 2.54414888697094,
+      "retrieved_sources": [
+        "skin_diseases.txt",
+        "food_poisoning.txt"
+      ],
+      "latency": 0.00045960000716149807
+    },
+    {
+      "question": "Small blister on foot from new shoes",
+      "expected_source": "first_aid.txt",
+      "top_score": 5.634789453242398,
+      "retrieved_sources": [
+        "fungal_infection.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0004558999789878726
+    },
+    {
+      "question": "Mild dandruff on scalp",
+      "expected_source": "ayush.txt",
+      "top_score": 5.181094951365048,
+      "retrieved_sources": [
+        "who_triage.txt",
+        "allergies.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0002759000053629279
+    },
+    {
+      "question": "Chapped lips in cold weather",
+      "expected_source": "who_triage.txt",
+      "top_score": 5.117718092378584,
+      "retrieved_sources": [
+        "ayush.txt",
+        "acidity.txt",
+        "diarrhea.txt"
+      ],
+      "latency": 0.0005097999819554389
+    },
+    {
+      "question": "Ear pain during flight landing",
+      "expected_source": "who_triage.txt",
+      "top_score": 4.296441912937168,
+      "retrieved_sources": [
+        "constipation.txt",
+        "diarrhea.txt"
+      ],
+      "latency": 0.0004206000012345612
+    },
+    {
+      "question": "Fever above 102\u00b0F for three days",
+      "expected_source": "fever.txt",
+      "top_score": 10.485965533041952,
+      "retrieved_sources": [
+        "ayush.txt",
+        "food_poisoning.txt",
+        "diarrhea.txt"
+      ],
+      "latency": 0.00040249997982755303
+    },
+    {
+      "question": "Rash spreading across body for two days",
+      "expected_source": "who_triage.txt",
+      "top_score": 9.651235901564199,
+      "retrieved_sources": [
+        "skin_diseases.txt"
+      ],
+      "latency": 0.00046259997179731727
+    },
+    {
+      "question": "Ear pain with discharge",
+      "expected_source": "who_triage.txt",
+      "top_score": 3.1260729825375595,
+      "retrieved_sources": [
+        "abdominal_pain.txt",
+        "heart.txt",
+        "constipation.txt"
+      ],
+      "latency": 0.00039549998473376036
+    },
+    {
+      "question": "Persistent diarrhea for four days",
+      "expected_source": "who_triage.txt",
+      "top_score": 7.982757307142787,
+      "retrieved_sources": [
+        "diarrhea.txt",
+        "who_triage.txt"
+      ],
+      "latency": 0.00041120004607364535
+    },
+    {
+      "question": "Child not eating for two days and lethargic",
+      "expected_source": "who_triage.txt",
+      "top_score": 5.894124854848651,
+      "retrieved_sources": [
+        "first_aid.txt",
+        "allergies.txt",
+        "diarrhea.txt"
+      ],
+      "latency": 0.00048069999320432544
+    },
+    {
+      "question": "Joint pain and swelling in knee for a week",
+      "expected_source": "who_triage.txt",
+      "top_score": 5.585177355275806,
+      "retrieved_sources": [
+        "first_aid.txt",
+        "allergies.txt"
+      ],
+      "latency": 0.0009967000223696232
+    },
+    {
+      "question": "Abdominal pain recurring every few hours for two days",
+      "expected_source": "who_triage.txt",
+      "top_score": 7.3375416977529575,
+      "retrieved_sources": [
+        "nausea_vomiting.txt",
+        "abdominal_pain.txt",
+        "food_poisoning.txt"
+      ],
+      "latency": 0.0016868000384420156
+    },
+    {
+      "question": "Red swollen wound that is warm to touch",
+      "expected_source": "first_aid.txt",
+      "top_score": 8.42680855991531,
+      "retrieved_sources": [
+        "first_aid.txt",
+        "abdominal_pain.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0015421999851241708
+    },
+    {
+      "question": "Painful urination for three days",
+      "expected_source": "who_triage.txt",
+      "top_score": 7.898165900041068,
+      "retrieved_sources": [
+        "who_triage.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0010311999940313399
+    },
+    {
+      "question": "Wheezing and shortness of breath after walking upstairs",
+      "expected_source": "who_triage.txt",
+      "top_score": 9.32937941817151,
+      "retrieved_sources": [
+        "allergies.txt",
+        "acidity.txt",
+        "gastritis.txt"
+      ],
+      "latency": 0.0015181000344455242
+    },
+    {
+      "question": "Persistent lower back pain for over a week",
+      "expected_source": "who_triage.txt",
+      "top_score": 6.270804856537138,
+      "retrieved_sources": [
+        "who_triage.txt",
+        "constipation.txt",
+        "first_aid.txt"
+      ],
+      "latency": 0.0012069999938830733
+    },
+    {
+      "question": "Recurring headaches every day for a week",
+      "expected_source": "who_triage.txt",
+      "top_score": 5.151636327690703,
+      "retrieved_sources": [
+        "diarrhea.txt",
+        "first_aid.txt",
+        "who_triage.txt"
+      ],
+      "latency": 0.0010525000398047268
+    },
+    {
+      "question": "High blood pressure reading at home",
+      "expected_source": "heart.txt",
+      "top_score": 7.848909419124735,
+      "retrieved_sources": [
+        "ayush.txt",
+        "nausea_vomiting.txt"
+      ],
+      "latency": 0.0007968000136315823
+    },
+    {
+      "question": "Weight loss without reason over past month",
+      "expected_source": "who_triage.txt",
+      "top_score": 4.852920013743149,
+      "retrieved_sources": [
+        "ayush.txt",
+        "acidity.txt",
+        "constipation.txt"
+      ],
+      "latency": 0.0007640999974682927
+    },
+    {
+      "question": "Night sweats for a week",
+      "expected_source": "who_triage.txt",
+      "top_score": 5.711095049026877,
+      "retrieved_sources": [
+        "acidity.txt",
+        "first_aid.txt",
+        "ayush.txt"
+      ],
+      "latency": 0.0005865000421181321
+    },
+    {
+      "question": "Chronic acidity not responding to antacids",
+      "expected_source": "ayush.txt",
+      "top_score": 7.702013111203456,
+      "retrieved_sources": [
+        "acidity.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.001137399987783283
+    },
+    {
+      "question": "Irregular heartbeat noticed occasionally",
+      "expected_source": "heart.txt",
+      "top_score": 0.0,
+      "retrieved_sources": [
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0007322999881580472
+    },
+    {
+      "question": "Swollen lymph nodes in neck for over a week",
+      "expected_source": "who_triage.txt",
+      "top_score": 7.981683338404002,
+      "retrieved_sources": [
+        "skin_diseases.txt",
+        "nausea_vomiting.txt",
+        "first_aid.txt"
+      ],
+      "latency": 0.0013215999933890998
+    },
+    {
+      "question": "Dry cough and mild fever for one week",
+      "expected_source": "fever.txt",
+      "top_score": 7.011876631704462,
+      "retrieved_sources": [
+        "ayush.txt",
+        "abdominal_pain.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0008032000041566789
+    },
+    {
+      "question": "Toothache that wakes me up at night",
+      "expected_source": "who_triage.txt",
+      "top_score": 5.997387306323269,
+      "retrieved_sources": [
+        "acidity.txt",
+        "gastritis.txt"
+      ],
+      "latency": 0.0006547000375576317
+    },
+    {
+      "question": "Bleeding gums when brushing teeth daily",
+      "expected_source": "who_triage.txt",
+      "top_score": 5.215044295119433,
+      "retrieved_sources": [
+        "constipation.txt",
+        "acidity.txt"
+      ],
+      "latency": 0.0005672000115737319
+    },
+    {
+      "question": "Ankle sprain with significant swelling",
+      "expected_source": "first_aid.txt",
+      "top_score": 4.338246143742526,
+      "retrieved_sources": [
+        "allergies.txt",
+        "constipation.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.00039739999920129776
+    },
+    {
+      "question": "Dizziness every time I stand up for past week",
+      "expected_source": "who_triage.txt",
+      "top_score": 5.997387306323269,
+      "retrieved_sources": [
+        "acidity.txt",
+        "gastritis.txt",
+        "constipation.txt"
+      ],
+      "latency": 0.0025749999913387
+    },
+    {
+      "question": "Skin infection with pus not healing",
+      "expected_source": "first_aid.txt",
+      "top_score": 11.258489371638266,
+      "retrieved_sources": [
+        "fungal_infection.txt"
+      ],
+      "latency": 0.0006271000020205975
+    },
+    {
+      "question": "Child having croup-like cough at night",
+      "expected_source": "who_triage.txt",
+      "top_score": 7.3827310262587025,
+      "retrieved_sources": [
+        "acidity.txt",
+        "ayush.txt",
+        "who_triage.txt"
+      ],
+      "latency": 0.0004953999887220562
+    },
+    {
+      "question": "Burning sensation in stomach after every meal for two weeks",
+      "expected_source": "ayush.txt",
+      "top_score": 7.607391944462948,
+      "retrieved_sources": [
+        "acidity.txt",
+        "gastritis.txt"
+      ],
+      "latency": 0.0005857000360265374
+    },
+    {
+      "question": "Blood in stool one time",
+      "expected_source": "who_triage.txt",
+      "top_score": 7.251517516810784,
+      "retrieved_sources": [
+        "gastritis.txt",
+        "food_poisoning.txt",
+        "diarrhea.txt"
+      ],
+      "latency": 0.00036670005647465587
+    },
+    {
+      "question": "Eye redness and discharge for three days",
+      "expected_source": "who_triage.txt",
+      "top_score": 4.480734753982528,
+      "retrieved_sources": [
+        "diarrhea.txt",
+        "food_poisoning.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0006097000441513956
+    },
+    {
+      "question": "Nosebleed happening frequently",
+      "expected_source": "who_triage.txt",
+      "top_score": 2.912135574242372,
+      "retrieved_sources": [
+        "food_poisoning.txt",
+        "diarrhea.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0004141000099480152
+    },
+    {
+      "question": "Numbness and tingling in fingers",
+      "expected_source": "who_triage.txt",
+      "top_score": 3.0696099650504847,
+      "retrieved_sources": [
+        "fungal_infection.txt",
+        "food_poisoning.txt",
+        "diarrhea.txt"
+      ],
+      "latency": 0.0004973000031895936
+    },
+    {
+      "question": "Swollen feet in the evening for past week",
+      "expected_source": "heart.txt",
+      "top_score": 5.487080748995757,
+      "retrieved_sources": [
+        "allergies.txt",
+        "first_aid.txt",
+        "gastritis.txt"
+      ],
+      "latency": 0.0007103999960236251
+    },
+    {
+      "question": "Sudden severe chest pain radiating to left arm",
+      "expected_source": "heart.txt",
+      "top_score": 12.55774247285967,
+      "retrieved_sources": [
+        "heart.txt",
+        "gastritis.txt"
+      ],
+      "latency": 0.0007620000396855175
+    },
+    {
+      "question": "Person collapsed and not responding",
+      "expected_source": "first_aid.txt",
+      "top_score": 6.104192439493112,
+      "retrieved_sources": [
+        "first_aid.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0005127000040374696
+    },
+    {
+      "question": "Severe allergic reaction with throat swelling",
+      "expected_source": "first_aid.txt",
+      "top_score": 15.127209030954024,
+      "retrieved_sources": [
+        "allergies.txt",
+        "fungal_infection.txt"
+      ],
+      "latency": 0.0006587000098079443
+    },
+    {
+      "question": "Uncontrolled heavy bleeding from deep cut",
+      "expected_source": "first_aid.txt",
+      "top_score": 4.339099260222032,
+      "retrieved_sources": [
+        "abdominal_pain.txt",
+        "gastritis.txt",
+        "food_poisoning.txt"
+      ],
+      "latency": 0.0006046000053174794
+    },
+    {
+      "question": "Sudden one-sided weakness and speech difficulty",
+      "expected_source": "who_triage.txt",
+      "top_score": 4.105743461478475,
+      "retrieved_sources": [
+        "food_poisoning.txt",
+        "gastritis.txt",
+        "who_triage.txt"
+      ],
+      "latency": 0.0005509000038728118
+    },
+    {
+      "question": "Seizure lasting more than five minutes",
+      "expected_source": "who_triage.txt",
+      "top_score": 11.886115839393064,
+      "retrieved_sources": [
+        "ayush.txt",
+        "who_triage.txt"
+      ],
+      "latency": 0.0005950999911874533
+    },
+    {
+      "question": "Infant with high fever of 104\u00b0F and not feeding",
+      "expected_source": "fever.txt",
+      "top_score": 8.009663347924876,
+      "retrieved_sources": [
+        "who_triage.txt",
+        "food_poisoning.txt",
+        "diarrhea.txt"
+      ],
+      "latency": 0.0008194000110961497
+    },
+    {
+      "question": "Severe difficulty breathing cannot speak full sentences",
+      "expected_source": "who_triage.txt",
+      "top_score": 6.950278743050427,
+      "retrieved_sources": [
+        "fungal_infection.txt",
+        "skin_diseases.txt",
+        "who_triage.txt"
+      ],
+      "latency": 0.0027333000325597823
+    },
+    {
+      "question": "Snake bite on leg twenty minutes ago",
+      "expected_source": "first_aid.txt",
+      "top_score": 4.693684698917002,
+      "retrieved_sources": [
+        "skin_diseases.txt",
+        "allergies.txt",
+        "abdominal_pain.txt"
+      ],
+      "latency": 0.0005689000245183706
+    },
+    {
+      "question": "Person drowning rescued and coughing up water",
+      "expected_source": "first_aid.txt",
+      "top_score": 12.208384878986225,
+      "retrieved_sources": [
+        "first_aid.txt",
+        "acidity.txt",
+        "gastritis.txt"
+      ],
+      "latency": 0.0006978999590501189
+    },
+    {
+      "question": "Severe burn covering large area of body",
+      "expected_source": "first_aid.txt",
+      "top_score": 13.11342056107243,
+      "retrieved_sources": [
+        "first_aid.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0006871999939903617
+    },
+    {
+      "question": "Child drank cleaning solution accidentally",
+      "expected_source": "first_aid.txt",
+      "top_score": 2.6777408558856233,
+      "retrieved_sources": [
+        "food_poisoning.txt",
+        "diarrhea.txt",
+        "nausea_vomiting.txt"
+      ],
+      "latency": 0.0004906999529339373
+    },
+    {
+      "question": "Sudden vision loss in one eye",
+      "expected_source": "who_triage.txt",
+      "top_score": 4.45348531896145,
+      "retrieved_sources": [
+        "abdominal_pain.txt",
+        "allergies.txt"
+      ],
+      "latency": 0.001520399993751198
+    },
+    {
+      "question": "Crushing chest pressure with sweating and nausea",
+      "expected_source": "heart.txt",
+      "top_score": 5.129774637734565,
+      "retrieved_sources": [
+        "nausea_vomiting.txt",
+        "heart.txt"
+      ],
+      "latency": 0.0007984999683685601
+    },
+    {
+      "question": "Electric shock and person is unresponsive",
+      "expected_source": "first_aid.txt",
+      "top_score": 9.205882186831673,
+      "retrieved_sources": [
+        "first_aid.txt",
+        "diarrhea.txt"
+      ],
+      "latency": 0.0006054000114090741
+    },
+    {
+      "question": "Head injury with confusion and vomiting",
+      "expected_source": "first_aid.txt",
+      "top_score": 10.308710358880203,
+      "retrieved_sources": [
+        "nausea_vomiting.txt"
+      ],
+      "latency": 0.0005017999792471528
+    },
+    {
+      "question": "Spinal injury after fall from height unable to move legs",
+      "expected_source": "first_aid.txt",
+      "top_score": 7.91536694995604,
+      "retrieved_sources": [
+        "food_poisoning.txt",
+        "nausea_vomiting.txt",
+        "first_aid.txt"
+      ],
+      "latency": 0.0006665000109933317
+    },
+    {
+      "question": "Severe abdominal pain with rigid stomach",
+      "expected_source": "who_triage.txt",
+      "top_score": 8.385869403971475,
+      "retrieved_sources": [
+        "nausea_vomiting.txt",
+        "abdominal_pain.txt",
+        "constipation.txt"
+      ],
+      "latency": 0.0004512000014074147
+    },
+    {
+      "question": "Diabetic patient unresponsive with low sugar",
+      "expected_source": "who_triage.txt",
+      "top_score": 5.62935627101151,
+      "retrieved_sources": [
+        "nausea_vomiting.txt",
+        "fungal_infection.txt",
+        "who_triage.txt"
+      ],
+      "latency": 0.0005110999918542802
+    },
+    {
+      "question": "Choking and cannot breathe or cough",
+      "expected_source": "first_aid.txt",
+      "top_score": 13.273024212536441,
+      "retrieved_sources": [
+        "first_aid.txt",
+        "who_triage.txt",
+        "ayush.txt"
+      ],
+      "latency": 0.0004960999940522015
+    },
+    {
+      "question": "Baby is blue and gasping for air",
+      "expected_source": "who_triage.txt",
+      "top_score": 6.462684533630522,
+      "retrieved_sources": [
+        "who_triage.txt",
+        "first_aid.txt",
+        "ayush.txt"
+      ],
+      "latency": 0.0006710999878123403
+    },
+    {
+      "question": "Pregnant woman with heavy bleeding",
+      "expected_source": "who_triage.txt",
+      "top_score": 4.826341727332147,
+      "retrieved_sources": [
+        "constipation.txt",
+        "abdominal_pain.txt"
+      ],
+      "latency": 0.0004289999487809837
+    },
+    {
+      "question": "Sudden swelling of face and lips after eating peanuts",
+      "expected_source": "first_aid.txt",
+      "top_score": 10.926418954430588,
+      "retrieved_sources": [
+        "fungal_infection.txt",
+        "allergies.txt",
+        "food_poisoning.txt"
+      ],
+      "latency": 0.0008205000194720924
+    },
+    {
+      "question": "Person stabbed in abdomen",
+      "expected_source": "first_aid.txt",
+      "top_score": 6.104192439493112,
+      "retrieved_sources": [
+        "first_aid.txt",
+        "gastritis.txt",
+        "abdominal_pain.txt"
+      ],
+      "latency": 0.0003768999595195055
+    },
+    {
+      "question": "Fever with stiff neck and sensitivity to light",
+      "expected_source": "fever.txt",
+      "top_score": 8.993956291576048,
+      "retrieved_sources": [
+        "nausea_vomiting.txt",
+        "who_triage.txt"
+      ],
+      "latency": 0.0007327999919652939
+    },
+    {
+      "question": "Herbal tea for better digestion",
+      "expected_source": "ayush.txt",
+      "top_score": 6.480134000661276,
+      "retrieved_sources": [
+        "nausea_vomiting.txt",
+        "acidity.txt",
+        "first_aid.txt"
+      ],
+      "latency": 0.0005006000283174217
+    },
+    {
+      "question": "Turmeric milk for mild joint pain",
+      "expected_source": "ayush.txt",
+      "top_score": 6.130209478073365,
+      "retrieved_sources": [
+        "ayush.txt",
+        "skin_diseases.txt",
+        "gastritis.txt"
+      ],
+      "latency": 0.0005862000398337841
+    },
+    {
+      "question": "Steam inhalation for nasal congestion",
+      "expected_source": "ayush.txt",
+      "top_score": 6.338598373324937,
+      "retrieved_sources": [
+        "who_triage.txt",
+        "ayush.txt",
+        "first_aid.txt"
+      ],
+      "latency": 0.00044130004243925214
+    },
+    {
+      "question": "Yoga exercises for mild stress relief",
+      "expected_source": "ayush.txt",
+      "top_score": 6.3209503760584616,
+      "retrieved_sources": [
+        "skin_diseases.txt",
+        "acidity.txt",
+        "abdominal_pain.txt"
+      ],
+      "latency": 0.0006273000035434961
+    },
+    {
+      "question": "Chest tightness with palpitations at rest for two days",
+      "expected_source": "heart.txt",
+      "top_score": 7.988380475854811,
+      "retrieved_sources": [
+        "who_triage.txt",
+        "ayush.txt",
+        "allergies.txt"
+      ],
+      "latency": 0.0007266000029630959
+    },
+    {
+      "question": "Heart racing without physical activity",
+      "expected_source": "heart.txt",
+      "top_score": 6.0583242027006,
+      "retrieved_sources": [
+        "constipation.txt",
+        "diarrhea.txt"
+      ],
+      "latency": 0.000542099995072931
+    },
+    {
+      "question": "Mild fever that comes and goes for a week",
+      "expected_source": "fever.txt",
+      "top_score": 5.6678973612611445,
+      "retrieved_sources": [
+        "who_triage.txt",
+        "first_aid.txt",
+        "abdominal_pain.txt"
+      ],
+      "latency": 0.0007198000093922019
+    },
+    {
+      "question": "Child with fever and rash",
+      "expected_source": "fever.txt",
+      "top_score": 6.87528804133861,
+      "retrieved_sources": [
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0005439000087790191
+    },
+    {
+      "question": "Minor first degree burn on hand from stove",
+      "expected_source": "first_aid.txt",
+      "top_score": 8.171980656352474,
+      "retrieved_sources": [
+        "skin_diseases.txt",
+        "nausea_vomiting.txt"
+      ],
+      "latency": 0.0006902000168338418
+    },
+    {
+      "question": "Small cut on finger while cooking",
+      "expected_source": "first_aid.txt",
+      "top_score": 4.7172102223074015,
+      "retrieved_sources": [
+        "nausea_vomiting.txt",
+        "skin_diseases.txt",
+        "allergies.txt"
+      ],
+      "latency": 0.0006089000380598009
+    },
+    {
+      "question": "Deep wound with visible bone",
+      "expected_source": "first_aid.txt",
+      "top_score": 5.587608015891223,
+      "retrieved_sources": [
+        "first_aid.txt",
+        "diarrhea.txt",
+        "food_poisoning.txt"
+      ],
+      "latency": 0.0006842000293545425
+    },
+    {
+      "question": "Car accident victim with multiple injuries",
+      "expected_source": "first_aid.txt",
+      "top_score": 4.506625183263527,
+      "retrieved_sources": [
+        "food_poisoning.txt",
+        "acidity.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.0004696999676525593
+    },
+    {
+      "question": "Mild seasonal allergy sneezing",
+      "expected_source": "who_triage.txt",
+      "top_score": 4.877212819387094,
+      "retrieved_sources": [
+        "allergies.txt"
+      ],
+      "latency": 0.00029499997617676854
+    },
+    {
+      "question": "Breathing difficulty and blue lips in child",
+      "expected_source": "who_triage.txt",
+      "top_score": 12.615462161547612,
+      "retrieved_sources": [
+        "who_triage.txt",
+        "fungal_infection.txt",
+        "skin_diseases.txt"
+      ],
+      "latency": 0.00045270001282915473
+    },
+    {
+      "question": "Fainting spell that lasted few seconds",
+      "expected_source": "who_triage.txt",
+      "top_score": 3.90151585187134,
+      "retrieved_sources": [
+        "first_aid.txt",
+        "skin_diseases.txt",
+        "abdominal_pain.txt"
+      ],
+      "latency": 0.0007276000105775893
+    },
+    {
+      "question": "Honey and ginger for sore throat",
+      "expected_source": "ayush.txt",
+      "top_score": 5.521515105904953,
+      "retrieved_sources": [
+        "acidity.txt",
+        "nausea_vomiting.txt",
+        "ayush.txt"
+      ],
+      "latency": 0.0009436000254936516
+    }
+  ]
+}

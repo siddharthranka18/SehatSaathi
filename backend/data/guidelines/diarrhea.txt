@@ -1,0 +1,109 @@
+Diarrhea - Triage Guidelines
+
+OVERVIEW
+Diarrhea is frequent loose or watery stool. Most cases are acute and self-limiting lasting 1-7 days. Severe cases with dehydration risk require urgent care.
+
+MILD DIARRHEA (Home Care)
+- Symptoms:
+  * Loose or watery stools 2-3 times per day
+  * Duration <24 hours
+  * No fever or low-grade fever (<99.5°F / <37.5°C)
+  * No blood or mucus in stool
+  * Mild abdominal cramping or discomfort
+  * Able to eat and drink normally
+  * Normal energy level
+  * No signs of dehydration
+
+- Recommended actions:
+  * Drink plenty of fluids (water, coconut water, ORS)
+  * Eat bland foods (rice, banana, crackers, boiled vegetables, white bread)
+  * Avoid dairy, spicy, fatty, and greasy foods
+  * Avoid high-fiber foods temporarily
+  * Rest and avoid strenuous activity
+  * Wash hands frequently to prevent spread
+  * Most cases resolve naturally in 24-48 hours
+  * Over-the-counter rehydration salts can help
+
+MODERATE DIARRHEA (Visit PHC within 24 hours)
+- Symptoms:
+  * Frequent loose stools (4-8 per day)
+  * Duration 24-48 hours without improvement
+  * Mild to moderate abdominal cramping
+  * Mild fever (99.5-101°F / 37.5-38.3°C)
+  * Signs of mild dehydration (thirst, slightly dark urine)
+  * Diarrhea with visible mucus
+  * Associated with mild nausea or vomiting
+  * Recent food or water source change or travel
+  * After antibiotic use (possible C.difficile)
+
+- Recommended actions:
+  * Aggressive rehydration with ORS or electrolyte solution
+  * Drink small frequent amounts rather than large volumes
+  * Eat bland foods once tolerated
+  * Avoid dairy except plain yogurt
+  * Note food triggers for future reference
+  * Seek care if unable to keep fluids down
+  * Seek care if duration >3 days or symptoms worsen
+  * Antidiarrheal medications should be used cautiously
+
+SEVERE DIARRHEA (Seek immediate medical attention)
+- Symptoms:
+  * Severe, frequent diarrhea (>8 episodes daily)
+  * Persistent diarrhea lasting >4 days
+  * Bloody diarrhea or diarrhea with significant mucus
+  * Severe abdominal pain or cramping
+  * Fever >101°F (>38.3°C) with diarrhea
+  * Signs of severe dehydration:
+    - Extreme thirst, very dry mouth
+    - Very dark or no urine output
+    - Dizziness or fainting
+    - Confusion or lethargy
+    - Pale or cold skin
+  * Unable to drink fluids due to vomiting
+  * Severe dehydration with weight loss (>5%)
+  * Persistent abdominal pain
+
+- Emergency red flags:
+  * Signs of shock (extreme weakness, rapid heartbeat, confusion)
+  * Severe bloody diarrhea
+  * Unable to drink for 6+ hours with active diarrhea
+  * Diarrhea with high fever and severe abdominal pain
+  * Suspected sepsis or severe infection
+
+HIGH-RISK GROUPS REQUIRING FASTER CARE
+- Infants and young children (<5 years)
+- Elderly (>65 years)
+- Pregnant women
+- Immunocompromised individuals
+- Pre-existing kidney or heart disease
+
+COMMON CAUSES
+- Viral gastroenteritis (rotavirus, norovirus, adenovirus)
+- Bacterial diarrhea (Salmonella, Shigella, E.coli, Campylobacter)
+- Parasitic infection (Giardia, Cryptosporidium)
+- Food poisoning
+- Lactose intolerance
+- Dietary changes or high-fat foods
+- Antibiotic side effects
+- IBS or inflammatory bowel disease
+- Celiac disease or gluten sensitivity
+- Medication side effects
+
+MANAGEMENT
+- Hydration is most critical (ORS, water, electrolyte drinks)
+- Bland diet (BRAT diet: banana, rice, applesauce, toast)
+- Rest and limit activity
+- Avoid dairy, fatty, spicy foods
+- Antibiotics only if bacterial pathogen identified
+- Probiotics may help restore gut flora
+
+WHEN TO SEEK CARE
+- Duration >3 days, especially if worsening
+- Blood or mucus in stool
+- High fever with diarrhea
+- Severe abdominal pain
+- Signs of dehydration
+- Severe diarrhea (>8 times daily)
+- In infants, young children, elderly
+- During pregnancy
+- Recent antibiotic use with severe symptoms

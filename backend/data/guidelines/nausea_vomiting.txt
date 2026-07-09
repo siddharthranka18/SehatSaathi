@@ -1,0 +1,102 @@
+Nausea and Vomiting - Triage Guidelines
+
+OVERVIEW
+Nausea and vomiting are symptoms of many conditions ranging from minor to serious. Triage depends on severity, duration, associated symptoms, and patient age.
+
+MILD NAUSEA/VOMITING (Home Care)
+- Symptoms:
+  * Mild nausea without vomiting or vomiting once
+  * Mild nausea triggered by specific triggers (smells, foods, motion)
+  * Able to drink fluids without difficulty
+  * No fever
+  * Normal energy level
+  * No abdominal pain or mild discomfort only
+  * Duration <2 hours or episodic
+
+- Recommended actions:
+  * Rest in a quiet, cool environment
+  * Avoid strong smells and visual triggers
+  * Sip small amounts of water or clear fluids
+  * Eat light foods once nausea subsides (crackers, toast)
+  * Ginger tea or mint tea may help
+  * Avoid dairy, spicy, fatty foods
+  * Fresh air and slow deep breathing
+  * Monitor for worsening
+
+MODERATE NAUSEA/VOMITING (Visit PHC within 24 hours)
+- Symptoms:
+  * Vomiting 2-4 times in a few hours
+  * Persistent nausea lasting >2 hours
+  * Unable to keep solid foods down but can tolerate liquids
+  * Mild to moderate abdominal pain or cramping
+  * Low-grade fever (99-100.5°F / 37.2-38°C)
+  * Mild dehydration signs (thirst, slightly dark urine)
+  * Symptoms following food, medication, or travel
+  * Associated with diarrhea (mild, <3 episodes)
+  * Duration 4-12 hours without improvement
+
+- Recommended actions:
+  * Rest completely
+  * Rehydrate with oral rehydration solution (ORS) in small frequent doses
+  * Avoid food until vomiting subsides
+  * Start bland foods once stable (rice, banana, crackers)
+  * Avoid triggers (smells, movement, stressful activities)
+  * Stay cool and get fresh air
+  * Seek care if unable to keep fluids down or symptoms worsen
+  * If medication-related: do not restart without physician guidance
+
+SEVERE NAUSEA/VOMITING (Seek immediate medical attention)
+- Symptoms:
+  * Persistent vomiting (multiple times per hour, unable to keep any fluids down)
+  * Severe abdominal pain with vomiting
+  * Vomit containing blood or resembling coffee grounds
+  * High fever (>101°F / >38.3°C) with severe vomiting
+  * Signs of severe dehydration:
+    - Very dark or no urine output
+    - Extreme weakness, dizziness, or fainting
+    - Dry mouth and lips, extreme thirst
+    - Confusion or altered consciousness
+  * Severe headache with stiff neck
+  * Abdominal distention with severe pain
+  * Persistent vomiting >4 hours without relief
+  * Vomiting after head injury or recent trauma
+  * Green/bilious vomit (suggests bowel obstruction)
+  * Suspected poisoning or medication overdose
+
+- Emergency red flags:
+  * Unable to drink for >6 hours with active vomiting
+  * Signs of shock (pale, cold, rapid heartbeat)
+  * Severe dehydration with altered mental status
+  * Blood in vomit
+  * Severe abdominal pain with rigid abdomen
+  * Vomiting with severe headache and stiff neck (meningitis)
+
+COMMON CAUSES
+- Gastroenteritis (food poisoning, viral, bacterial)
+- Motion sickness
+- Medication side effects
+- Migraine or severe headache
+- Pregnancy (first trimester)
+- Anxiety or stress
+- Chemotherapy or radiation
+- Alcohol intoxication
+- Appendicitis or bowel obstruction
+- Meningitis or other infections
+- Concussion or head injury
+
+MANAGEMENT BY CAUSE
+- Gastroenteritis: ORS, bland diet, antiemetics if prescribed
+- Medication side effect: talk to doctor; may need adjustment
+- Migraine: rest, dark quiet room, prescribed pain medication
+- Motion sickness: fix gaze on horizon, ginger, antihistamines
+- Pregnancy: small frequent meals, ginger, vitamin B6
+
+WHEN TO SEEK CARE
+- Vomiting lasting >6 hours
+- Signs of dehydration
+- Blood in vomit
+- Severe abdominal pain
+- High fever with vomiting
+- Vomiting after head injury
+- Suspected poisoning
+- In infants, young children, elderly, or pregnancy

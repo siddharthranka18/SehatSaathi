@@ -30,8 +30,10 @@ from qdrant_client.models import (
 
 from rank_bm25 import BM25Okapi
 
+# Prevent HuggingFace tokenizers from spawning subprocesses (Windows multiprocessing safety)
+os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
-print("RAG IMPORT COMPLETE - NO ML LOADED")
+print("RAG IMPORT COMPLETE - ML will load lazily in background thread")
 
 
 # =============================
@@ -69,8 +71,57 @@ RERANKER_MODEL_NAME = (
     "cross-encoder/ms-marco-MiniLM-L-6-v2"
 )
 
+# ---- HuggingFace offline mode ----
+# After models are downloaded once, force local-only loading.
+# This eliminates the slow HEAD https://huggingface.co/... check on every startup.
+# Remove these lines only if you need to download a new model version.
+if os.getenv("HF_FORCE_ONLINE", "").lower() not in ("1", "true", "yes"):
+    os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+    os.environ.setdefault("HF_DATASETS_OFFLINE", "1")
+    os.environ.setdefault("SENTENCE_TRANSFORMERS_HOME",
+        str(Path.home() / ".cache" / "torch" / "sentence_transformers"))
 
+
+# Default cross-encoder confidence threshold.
+# Overridden at runtime by get_confidence_threshold() which reads threshold.json
+# (written by the evaluation tuning script) — so there is exactly ONE threshold used.
 CONFIDENCE_THRESHOLD = -2
+
+# Dynamic threshold file path (written by evaluation tuning)
+THRESHOLD_FILE = INDEX_DIR / "threshold.json"
+
+# Minimum token length for a query keyword to be matched against source filenames.
+_KEYWORD_MIN_LEN = 4
+
+
+def _source_keyword_match(query: str, sources: list[str]) -> bool:
+    """
+    Return True if the top retrieved source filename clearly relates to the
+    query topic.
+
+    Strategy:
+      - Split query into tokens (lower-case, stripped of punctuation).
+      - Keep only tokens longer than _KEYWORD_MIN_LEN (avoids noise like
+        "a", "the", "with").
+      - Check whether any source filename (lower-case, no extension)
+        contains at least one of those tokens.
+
+    Example: query="vomiting since morning", source="nausea_vomiting.txt"
+      → tokens = ["vomiting", "since", "morning"]
+      → stem = "nausea_vomiting"
+      → "vomiting" in "nausea_vomiting"  → True
+
+    This lets us bypass a pessimistic numeric threshold when the retrieval
+    pipeline clearly found the right document.
+    """
+    import re as _re
+    tokens = [t for t in _re.split(r"[^a-z0-9]+", query.lower()) if len(t) >= _KEYWORD_MIN_LEN]
+    for src in sources:
+        stem = src.lower().replace(".txt", "").replace(".pdf", "").replace("-", "_")
+        for tok in tokens:
+            if tok in stem:
+                return True
+    return False
 
 # Opt-in only: FAST_DEV=1 skips ML models and uses BM25-only retrieval.
 def is_fast_dev() -> bool:
@@ -149,12 +200,22 @@ def get_embedding_model():
     if _embedding_model is not None:
         return _embedding_model
 
+    import time as _time
     with _model_lock:
         if _embedding_model is None:
-            print("Loading embedding model")
+            # import phase (slow on first call, cached by Python after)
+            print("[EMB] Importing SentenceTransformer...")
+            _t = _time.perf_counter()
             from sentence_transformers import SentenceTransformer
-            _embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
-            print("Embedding loaded")
+            print(f"[EMB] Import done ({_time.perf_counter() - _t:.2f}s)")
+
+            # model load phase
+            print(f"[EMB] Loading model '{EMBEDDING_MODEL_NAME}'...")
+            _t = _time.perf_counter()
+            _embedding_model = SentenceTransformer(
+                EMBEDDING_MODEL_NAME
+            )
+            print(f"[EMB] Model loaded ({_time.perf_counter() - _t:.2f}s)")
 
     return _embedding_model
 
@@ -169,12 +230,22 @@ def get_reranker():
     if _reranker_model is not None:
         return _reranker_model
 
+    import time as _time
     with _model_lock:
         if _reranker_model is None:
-            print("Loading reranker")
+            # import (near-zero cost after embedding model loaded ST already)
+            print("[RERANKER] Importing CrossEncoder...")
+            _t = _time.perf_counter()
             from sentence_transformers import CrossEncoder
-            _reranker_model = CrossEncoder(RERANKER_MODEL_NAME)
-            print("Reranker loaded")
+            print(f"[RERANKER] Import done ({_time.perf_counter() - _t:.2f}s)")
+
+            # model load phase
+            print(f"[RERANKER] Loading model '{RERANKER_MODEL_NAME}'...")
+            _t = _time.perf_counter()
+            _reranker_model = CrossEncoder(
+                RERANKER_MODEL_NAME
+            )
+            print(f"[RERANKER] Model loaded ({_time.perf_counter() - _t:.2f}s)")
 
     return _reranker_model
 
@@ -207,14 +278,24 @@ def warmup_models():
         _models_warming = True
 
     try:
-        print("Background: loading embedding model...")
+        import time as _time
+        _total = _time.perf_counter()
+        print("[STARTUP] === Background model warmup starting ===")
+
+        # --- Embedding model ---
+        _t = _time.perf_counter()
         get_embedding_model()
-        print("Background: loading reranker...")
+        print(f"[STARTUP] Embedding model ready ({_time.perf_counter() - _t:.2f}s)")
+
+        # --- Reranker ---
+        _t = _time.perf_counter()
         get_reranker()
+        print(f"[STARTUP] CrossEncoder ready ({_time.perf_counter() - _t:.2f}s)")
+
         _models_ready = True
-        print("Background: full RAG pipeline ready (hybrid + reranker).")
+        print(f"[STARTUP] === Warmup complete. Full RAG pipeline ready in {_time.perf_counter() - _total:.2f}s ===")
     except Exception as exc:
-        print(f"Background model warmup failed: {exc}")
+        print(f"[STARTUP] Model warmup failed: {exc}")
     finally:
         with _model_lock:
             _models_warming = False
@@ -873,7 +954,23 @@ def retrieve_context(query, top_k=3):
     print(">>> AFTER creating reranker_scores")
     print(">>> VALUE:", reranker_scores)
 
-    # Debug print block now executes after resolving dependent list assignments
+    # ---- Single threshold decision ----
+    # get_confidence_threshold() reads threshold.json if present (written by
+    # the evaluation tuning script), otherwise falls back to CONFIDENCE_THRESHOLD.
+    # This is the ONLY place where the threshold is evaluated.
+    threshold = get_confidence_threshold()
+
+    # Primary confidence signal: cross-encoder score vs threshold.
+    score_confident = top_score > threshold
+
+    # Secondary override: if the top retrieved source filename contains a
+    # meaningful keyword from the query, trust the retrieval regardless of
+    # the numeric score. CrossEncoder scores for nausea/skin/mild-symptom
+    # queries often sit between -7 and -3, which is below a general threshold
+    # but still indicates correct document retrieval.
+    source_match = _source_keyword_match(query, top_sources)
+    confident = score_confident or source_match
+
     print("\n========== RAG DEBUG ==========")
     print("Query:", query)
     print("Dense hits:", len(dense_results))
@@ -883,12 +980,12 @@ def retrieve_context(query, top_k=3):
     print("Dense scores:", dense_scores[:5])
     print("Reranker scores:", reranker_scores)
     print("Top score:", top_score)
-    print("Threshold:", CONFIDENCE_THRESHOLD)
-    print("Confident:", top_score > CONFIDENCE_THRESHOLD)
+    print("Threshold:", threshold)       # only one threshold now
+    print("Score confident:", score_confident)
+    print("Source keyword match:", source_match)
+    print("Final confident:", confident)
     print("Sources:", top_sources)
-    print("===============================\n")
-
-    print("RAG SCORE:", top_score)
+    print("===============================")
 
     # 4. Return unified contextual execution payload dictionary
     return {
@@ -896,7 +993,8 @@ def retrieve_context(query, top_k=3):
             x[0] for x in ranked[:top_k]
         ],
         "top_score": top_score,
-        "confident": top_score > CONFIDENCE_THRESHOLD,
+        "confident": confident,          # reflects both score AND source-keyword match
+        "source_keyword_match": source_match,
         "retrieved_sources": top_sources,
         "dense_hits": len(dense_results),
         "bm25_hits": len(sparse),
@@ -913,6 +1011,32 @@ def retrieve_context(query, top_k=3):
         },
         "timings": timings
     }
+
+
+def get_confidence_threshold() -> float:
+    """Return a dynamically tuned confidence threshold if available, otherwise fallback to default."""
+    try:
+        if THRESHOLD_FILE.exists():
+            import json
+            with open(THRESHOLD_FILE, encoding="utf-8") as f:
+                data = json.load(f)
+            t = float(data.get("threshold", CONFIDENCE_THRESHOLD))
+            return t
+    except Exception:
+        pass
+    return CONFIDENCE_THRESHOLD
+
+
+def set_confidence_threshold(value: float):
+    """Persist tuned threshold to disk for runtime use."""
+    try:
+        INDEX_DIR.mkdir(parents=True, exist_ok=True)
+        import json
+        with open(THRESHOLD_FILE, "w", encoding="utf-8") as f:
+            json.dump({"threshold": float(value)}, f)
+        return True
+    except Exception:
+        return False
 
 
 

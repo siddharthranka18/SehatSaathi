@@ -1,0 +1,90 @@
+Food Poisoning - Triage Guidelines
+
+OVERVIEW
+Food poisoning results from eating contaminated food. Onset varies from 1 hour to 72 hours after ingestion. Most cases are self-limiting but require hydration and monitoring.
+
+MILD FOOD POISONING (Home Care)
+- Symptoms:
+  * Mild nausea or vomiting 1-2 times
+  * Mild diarrhea (1-3 episodes)
+  * Mild stomach cramps
+  * No fever or low-grade fever (<99.5°F / <37.5°C)
+  * Able to drink fluids
+  * Symptoms onset 1-24 hours after eating
+  * Normal energy level
+
+- Recommended actions:
+  * Rest and avoid food for first few hours
+  * Start sipping oral rehydration solution (ORS) or water
+  * Once nausea subsides, eat bland foods (rice, crackers, banana, boiled vegetables)
+  * Avoid dairy, spicy, fatty, and greasy foods
+  * Avoid alcohol
+  * Continue fluids frequently in small amounts
+  * Symptoms usually resolve in 24-48 hours
+  * Monitor for worsening signs
+
+MODERATE FOOD POISONING (Visit PHC within 12-24 hours)
+- Symptoms:
+  * Persistent vomiting (4+ episodes in 24 hours)
+  * Moderate diarrhea (4-6 episodes daily)
+  * Moderate stomach cramps and pain
+  * Fever 99.5-101°F (37.5-38.3°C)
+  * Signs of mild dehydration (thirst, dark urine, dry mouth)
+  * Unable to keep fluids down initially
+  * Symptoms lasting >24 hours without improvement
+  * Diarrhea with visible blood or mucus
+  * Multiple people affected (suggests food source)
+
+- Recommended actions:
+  * Seek medical evaluation if dehydration develops or symptoms worsen
+  * Continue ORS in frequent small amounts
+  * Once vomiting subsides, start bland foods
+  * Monitor for signs of dehydration
+  * Avoid antibiotics unless specific bacteria identified
+  * Rest completely
+  * Seek care if unable to keep fluids down for 6+ hours
+
+SEVERE FOOD POISONING (Seek immediate medical attention)
+- Symptoms:
+  * Severe, persistent vomiting (unable to retain any fluids)
+  * Severe diarrhea (>10 episodes daily or bloody)
+  * Severe abdominal pain and cramping
+  * Fever >101°F (>38.3°C)
+  * Signs of severe dehydration:
+    - Extreme thirst, very dry mouth
+    - Little or no urine output
+    - Extreme weakness or dizziness
+    - Confusion or altered mental status
+  * Blood in vomit or stool
+  * Signs of shock (pale, cold, rapid heartbeat)
+  * Persistent pain after vomiting stops
+  * Symptoms in very young children, elderly, or immunocompromised individuals
+  * Foodborne botulism signs (blurred vision, difficulty swallowing, paralysis)
+
+- Emergency red flags:
+  * Unable to drink fluids for >6 hours with active vomiting
+  * Severe dehydration with signs of shock
+  * Severe bloody diarrhea
+  * High fever with severe symptoms
+  * Signs of systemic infection
+
+PREVENTION
+- Proper food storage and hygiene
+- Cook foods to safe temperatures
+- Avoid raw or undercooked eggs, meat, seafood
+- Wash hands before eating
+- Use clean utensils and cutting boards
+- Don't leave cooked food at room temperature >2 hours
+
+RECOVERY TIMELINE
+- Mild cases: 24-48 hours
+- Moderate cases: 2-5 days
+- Severe cases: may require hospitalization and IV fluids
+
+WHEN TO SEEK CARE
+- Symptoms lasting >3 days
+- Signs of dehydration
+- Blood in stool or vomit
+- Severe pain
+- Fever >101°F (>38.3°C)
+- Symptoms in vulnerable populations (infant, elderly, pregnant)

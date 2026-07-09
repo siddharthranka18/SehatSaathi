@@ -16,11 +16,16 @@ from app.services.rag_service import (
 
 def _warmup_models():
     """Runs in a background thread — only when FAST_DEV is NOT set."""
-    print("Background warmup: loading embedding model...")
-    get_embedding_model()
-    print("Background warmup: loading reranker...")
-    get_reranker()
-    print("Background warmup complete. All requests will now be fast.")
+    try:
+        print("Background warmup: loading embedding model...")
+        get_embedding_model()
+        print("Background warmup: loading reranker...")
+        get_reranker()
+        print("Background warmup complete. All requests will now be fast.")
+    except Exception as exc:
+        import traceback
+        print(f"[WARMUP ERROR] {type(exc).__name__}: {exc}")
+        traceback.print_exc()
 
 
 @asynccontextmanager
@@ -31,7 +36,10 @@ async def lifespan(app: FastAPI):
         print("FAST_DEV=1: ML models skipped. BM25-only mode active. Server ready.")
     else:
         print("Server ready. Warming up ML models in background...")
-        threading.Thread(target=_warmup_models, daemon=True).start()
+        # NOTE: daemon=False (default) — lets thread finish even if main thread is idle.
+        # daemon=True would allow Windows to kill the thread mid-import (torch DLL load),
+        # causing a silent crash with no traceback.
+        threading.Thread(target=_warmup_models).start()
     yield
 
 app = FastAPI(

@@ -214,7 +214,7 @@ const speak = useCallback((text) => {
             {messages.map((m, i) => (
               <div key={i}>
                 <ChatBubble role={m.role} content={m.content} source={m.source} />
-                {m.is_final && <TriageCard urgency={m.urgency} source={m.source} confidence={m.confidence} retrievedSources={m.retrievedSources} latency={m.latency} />}
+                {m.urgency && <TriageCard urgency={m.urgency} source={m.source} confidence={m.confidence} retrievedSources={m.retrievedSources} latency={m.latency} />}
               </div>
             ))}
 
