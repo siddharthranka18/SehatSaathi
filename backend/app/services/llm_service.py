@@ -213,7 +213,6 @@ def run_triage(request: TriageRequest) -> TriageResponse:
     t0 = time.perf_counter()
     rewritten_query = rewrite_query(chat_completion, full_text)
     pipeline_timings["rewrite"] = round(time.perf_counter() - t0, 4)
-    print("REWRITTEN QUERY:", rewritten_query)
 
     # 3. RAG RETRIEVAL
     t0 = time.perf_counter()
@@ -224,12 +223,8 @@ def run_triage(request: TriageRequest) -> TriageResponse:
         query=rewritten_query,
     )
 
-    print("\n========== TRIAGE DEBUG ==========")
-    print("RAG Source:", "medical_guideline_rag" if rag_result["confident"] else "web_fallback")
-    print("Top Score:", rag_result["top_score"])
-    print("Source keyword match:", rag_result.get("source_keyword_match", "n/a"))
-    print("Confident:", rag_result["confident"])
-    print("==================================\n")
+    source_str = "medical_guideline_rag" if rag_result["confident"] else "web_fallback"
+    print(f"INFO: RAG source: {source_str}")
 
     # 4. CONTEXT SELECTION
     t0 = time.perf_counter()
@@ -294,7 +289,6 @@ Clearly mention that this information is from web search and may not be clinical
     t0 = time.perf_counter()
     raw = chat_completion_json(messages)
     pipeline_timings["llm"] = round(time.perf_counter() - t0, 4)
-    print("RAW LLM:", raw)
 
     # 8. JSON PARSE
     t0 = time.perf_counter()

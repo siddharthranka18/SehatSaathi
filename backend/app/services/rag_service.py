@@ -293,7 +293,7 @@ def warmup_models():
         print(f"[STARTUP] CrossEncoder ready ({_time.perf_counter() - _t:.2f}s)")
 
         _models_ready = True
-        print(f"[STARTUP] === Warmup complete. Full RAG pipeline ready in {_time.perf_counter() - _total:.2f}s ===")
+        print("INFO: Background warmup complete")
     except Exception as exc:
         print(f"[STARTUP] Model warmup failed: {exc}")
     finally:
@@ -930,8 +930,6 @@ def retrieve_context(query, top_k=3):
     timings["total"] = round(
         time.perf_counter() - total_start, 4
     )
-    print("Ranked length:", len(ranked))
-    print("Ranked sample:", ranked[:3])
     top_score = float(ranked[0][1])
 
     # 1. Map reranked parent documents back to their source files safely
@@ -944,15 +942,10 @@ def retrieve_context(query, top_k=3):
     top_sources = list(dict.fromkeys(top_sources))
 
     # 2. Package cross-encoder evaluation scores array safely
-    print(">>> BEFORE creating reranker_scores")
-
     reranker_scores = []
 
     for _, score in ranked[:top_k]:
         reranker_scores.append(float(score))
-
-    print(">>> AFTER creating reranker_scores")
-    print(">>> VALUE:", reranker_scores)
 
     # ---- Single threshold decision ----
     # get_confidence_threshold() reads threshold.json if present (written by
@@ -970,22 +963,6 @@ def retrieve_context(query, top_k=3):
     # but still indicates correct document retrieval.
     source_match = _source_keyword_match(query, top_sources)
     confident = score_confident or source_match
-
-    print("\n========== RAG DEBUG ==========")
-    print("Query:", query)
-    print("Dense hits:", len(dense_results))
-    print("BM25 hits:", len(sparse))
-    print("Parent docs:", len(parents))
-    print("Returned docs:", len(ranked[:top_k]))
-    print("Dense scores:", dense_scores[:5])
-    print("Reranker scores:", reranker_scores)
-    print("Top score:", top_score)
-    print("Threshold:", threshold)       # only one threshold now
-    print("Score confident:", score_confident)
-    print("Source keyword match:", source_match)
-    print("Final confident:", confident)
-    print("Sources:", top_sources)
-    print("===============================")
 
     # 4. Return unified contextual execution payload dictionary
     return {
